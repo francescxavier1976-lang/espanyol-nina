@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nina's English · Rise Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --bg:#05080f;--s1:#090e1a;--s2:#0f1525;--s3:#151c30;
+  --blue:#2a5caa;--blue2:#4a7fd4;--blue3:rgba(42,92,170,0.15);
+  --gold:#c9a844;--gold2:#e8c96a;--gold3:rgba(201,168,68,0.15);
+  --cream:#eef2f8;--c60:rgba(238,242,248,0.6);--c30:rgba(238,242,248,0.3);
+  --c15:rgba(238,242,248,0.15);--c08:rgba(238,242,248,0.08);
+  --green:#2db34a;--red:#d94040;--border:rgba(42,92,170,0.25);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--cream);min-height:100vh;}
+.hidden{display:none!important;}
+.screen{min-height:100vh;display:flex;flex-direction:column;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%{transform:scale(0.8);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.fadeup{animation:fadeUp .4s ease forwards;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--s1);}
+::-webkit-scrollbar-thumb{background:var(--blue);border-radius:3px;}
+
+/* DASHBOARD */
+.dash-hero{background:linear-gradient(160deg,#060c1a 0%,#0a1228 50%,#05080f 100%);padding:28px 20px 24px;position:relative;overflow:hidden;}
+.dash-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(42,92,170,0.25) 0%,transparent 70%);pointer-events:none;}
+.dash-hero::after{content:'';position:absolute;bottom:-20px;left:-20px;width:160px;height:160px;background:radial-gradient(circle,rgba(201,168,68,0.1) 0%,transparent 70%);pointer-events:none;}
+.dash-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;position:relative;z-index:1;}
+.dash-greeting{font-size:.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--c30);margin-bottom:4px;}
+.dash-name{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--cream);line-height:1;}
+.dash-name span{background:linear-gradient(135deg,#4a7fd4,#c9a844);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.streak-widget{display:flex;flex-direction:column;align-items:center;background:rgba(42,92,170,0.1);border:1px solid var(--border);border-radius:14px;padding:10px 16px;}
+.streak-fire{font-size:1.6rem;line-height:1;}
+.streak-num{font-size:1.4rem;font-weight:900;color:var(--gold2);line-height:1;}
+.streak-label{font-size:.58rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--c30);}
+.level-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;position:relative;z-index:1;}
+.level-badge{background:linear-gradient(135deg,var(--blue),var(--blue2));border-radius:20px;padding:5px 14px;font-size:.75rem;font-weight:800;color:white;}
+.level-name{font-size:.85rem;font-weight:700;color:var(--c60);}
+.xp-bar-wrap{position:relative;z-index:1;}
+.xp-labels{display:flex;justify-content:space-between;margin-bottom:5px;}
+.xp-label{font-size:.65rem;font-weight:700;color:var(--c30);letter-spacing:1px;}
+.xp-bar{height:6px;background:var(--c08);border-radius:3px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold));border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1);}
+.motivacion{margin:16px 20px 0;background:rgba(42,92,170,0.08);border-left:3px solid var(--blue2);border-radius:0 10px 10px 0;padding:12px 14px;font-size:.8rem;font-style:italic;color:var(--c60);line-height:1.5;}
+.motivacion strong{color:var(--gold);font-style:normal;}
+.dash-body{padding:20px;flex:1;}
+.section-title{font-size:.65rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--c30);margin-bottom:14px;}
+.daily-card{background:linear-gradient(135deg,rgba(42,92,170,0.25),rgba(201,168,68,0.08));border:1px solid rgba(42,92,170,0.4);border-radius:18px;padding:18px;margin-bottom:24px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.daily-card:hover{transform:translateY(-2px);border-color:var(--blue2);box-shadow:0 8px 30px rgba(42,92,170,0.2);}
+.daily-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.daily-icon{font-size:1.4rem;}
+.daily-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--cream);}
+.daily-sub{font-size:.75rem;color:var(--c60);}
+.daily-xp{position:absolute;top:14px;right:14px;background:var(--gold3);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:.7rem;font-weight:800;color:var(--gold);}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.cat-card{background:var(--s1);border:1px solid var(--c08);border-radius:16px;padding:16px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.cat-card:hover{background:var(--s2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+.cat-card-icon{font-size:1.5rem;margin-bottom:8px;display:block;}
+.cat-card-name{font-weight:800;font-size:.82rem;color:var(--cream);margin-bottom:4px;}
+.cat-card-count{font-size:.65rem;color:var(--c30);font-weight:600;}
+.cat-progress-mini{margin-top:8px;height:3px;background:var(--c08);border-radius:2px;overflow:hidden;}
+.cat-progress-fill{height:100%;border-radius:2px;transition:width .6s ease;}
+.progress-screen-btn{margin-top:20px;width:100%;padding:14px;border-radius:14px;border:1px solid var(--c15);background:transparent;color:var(--c60);font-family:'Nunito',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;}
+.progress-screen-btn:hover{background:var(--c08);color:var(--cream);}
+
+/* CATEGORY */
+.cat-header{background:var(--s1);padding:20px;border-bottom:1px solid var(--c08);}
+.back-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.back-btn{background:var(--c08);border:none;color:var(--cream);border-radius:10px;width:36px;height:36px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
+.back-btn:hover{background:var(--c15);}
+.cat-header-icon{font-size:2.2rem;margin-bottom:6px;}
+.cat-header-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--cream);}
+.cat-header-sub{font-size:.78rem;color:var(--c60);margin-top:4px;}
+.topic-list{padding:16px 20px;display:flex;flex-direction:column;gap:10px;flex:1;overflow-y:auto;}
+.topic-item{background:var(--s1);border:1px solid var(--c08);border-radius:14px;overflow:hidden;}
+.topic-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .2s;}
+.topic-header:hover{background:var(--s2);}
+.topic-icon{font-size:1.2rem;flex-shrink:0;}
+.topic-info{flex:1;}
+.topic-name{font-weight:800;font-size:.9rem;color:var(--cream);}
+.topic-meta{font-size:.68rem;color:var(--c30);margin-top:2px;}
+.topic-chevron{color:var(--c30);font-size:.8rem;transition:transform .2s;}
+.topic-chevron.open{transform:rotate(90deg);}
+.topic-body{display:none;border-top:1px solid var(--c08);padding:14px 16px;}
+.topic-body.open{display:block;}
+.topic-bar-wrap{margin-bottom:12px;}
+.topic-bar{height:4px;background:var(--c08);border-radius:2px;overflow:hidden;margin-top:4px;}
+.topic-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--blue),var(--gold));transition:width .5s ease;}
+.topic-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.topic-btn{padding:10px;border-radius:10px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:.8rem;transition:all .2s;color:var(--cream);}
+.topic-btn:hover{transform:scale(1.03);}
+
+/* LESSON */
+.lesson-top{display:flex;align-items:center;gap:10px;padding:16px 20px;background:var(--s1);border-bottom:1px solid var(--c08);}
+.lesson-bar-wrap{flex:1;}
+.lesson-bar{height:4px;background:var(--c08);border-radius:2px;overflow:hidden;}
+.lesson-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold));border-radius:2px;transition:width .4s ease;}
+.lesson-badges{display:flex;gap:6px;}
+.mini-badge{background:var(--c08);border-radius:20px;padding:4px 10px;font-size:.72rem;font-weight:800;color:var(--c60);white-space:nowrap;}
+.lesson-body{flex:1;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.card-thumb{font-size:3rem;margin-bottom:10px;display:block;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.4));}
+
+/* FLASHCARD */
+.flash-scene{perspective:1200px;width:100%;max-width:500px;margin-bottom:20px;}
+.flash-inner{position:relative;width:100%;height:260px;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,0,.2,1);cursor:pointer;}
+.flash-inner.flipped{transform:rotateY(180deg);}
+.flash-face{position:absolute;inset:0;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;backface-visibility:hidden;padding:28px;text-align:center;}
+.flash-front{background:linear-gradient(145deg,var(--s2),var(--s3));border:1px solid var(--c15);}
+.flash-back{background:linear-gradient(145deg,#061a10,#0a2018);border:1px solid rgba(45,179,74,0.2);transform:rotateY(180deg);}
+.flash-lang{font-size:.6rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;opacity:.4;color:var(--cream);}
+.flash-word{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700;color:var(--cream);line-height:1.2;}
+.flash-variants{display:flex;flex-direction:column;gap:6px;margin-top:10px;width:100%;}
+.variant-row{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.05);border-radius:8px;padding:6px 10px;}
+.variant-flag{font-size:1rem;flex-shrink:0;}
+.variant-word{font-size:.88rem;font-weight:700;color:var(--cream);}
+.variant-label{font-size:.62rem;color:var(--c30);margin-left:auto;}
+.flash-note{margin-top:10px;background:rgba(201,168,68,0.08);border:1px solid rgba(201,168,68,0.2);border-radius:8px;padding:7px 12px;font-size:.72rem;color:var(--gold);max-width:300px;text-align:center;}
+.flip-hint{font-size:.72rem;color:var(--c30);margin-bottom:16px;text-align:center;width:100%;}
+.knew-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:500px;}
+.knew-btn{padding:14px;border-radius:13px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:.88rem;transition:all .2s;}
+.knew-btn.yes{background:linear-gradient(135deg,#1a6a36,#0d4422);color:#fff;}
+.knew-btn.no{background:var(--c08);color:var(--c60);}
+.knew-btn:hover{transform:scale(1.03);}
+
+/* QUIZ */
+.quiz-q-box{background:var(--s2);border:1px solid var(--c15);border-radius:22px;padding:28px 22px;text-align:center;margin-bottom:16px;width:100%;max-width:500px;}
+.quiz-qlabel{font-size:.6rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--c30);margin-bottom:10px;}
+.quiz-qword{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700;color:var(--cream);line-height:1.2;}
+.quiz-qctx{font-size:.73rem;color:var(--c30);margin-top:8px;font-style:italic;}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:500px;margin-bottom:10px;}
+.quiz-opt{padding:14px 12px;border-radius:13px;border:1px solid var(--c08);background:var(--c08);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:.83rem;color:var(--cream);transition:all .2s;line-height:1.3;text-align:center;}
+.quiz-opt:not(.done):hover{background:var(--c15);border-color:var(--c30);}
+.quiz-opt.done{cursor:default;}
+.quiz-opt.correct{background:rgba(45,179,74,0.2);border-color:var(--green);color:#8fffa8;}
+.quiz-opt.wrong{background:rgba(217,64,64,0.15);border-color:var(--red);color:#ff9090;}
+.quiz-note{background:rgba(201,168,68,0.07);border:1px solid rgba(201,168,68,0.18);border-radius:10px;padding:10px 14px;font-size:.76rem;color:var(--gold);text-align:center;margin-bottom:12px;width:100%;max-width:500px;line-height:1.5;}
+.next-btn{width:100%;max-width:500px;padding:15px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--blue),var(--blue2));color:white;font-family:'Nunito',sans-serif;font-weight:800;font-size:.92rem;cursor:pointer;transition:all .2s;}
+.next-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(42,92,170,0.4);}
+
+/* RESULT */
+#screen-result{background:var(--bg);align-items:center;justify-content:center;padding:24px;}
+.result-card{background:linear-gradient(145deg,var(--s2),var(--s3));border:1px solid var(--c15);border-radius:26px;padding:36px 28px;text-align:center;width:100%;max-width:460px;margin-bottom:16px;}
+.result-emoji{font-size:3.5rem;margin-bottom:12px;}
+.result-title{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700;color:var(--cream);margin-bottom:8px;}
+.result-pct{font-size:3.8rem;font-weight:900;background:linear-gradient(135deg,var(--blue2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:10px 0;}
+.xp-earned{display:inline-block;background:var(--gold3);border:1px solid var(--border);border-radius:20px;padding:5px 16px;font-size:.82rem;font-weight:800;color:var(--gold);margin-bottom:16px;}
+.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0;}
+.rstat{background:var(--c08);border-radius:10px;padding:12px 6px;}
+.rstat-v{font-size:1.5rem;font-weight:900;color:var(--gold2);}
+.rstat-l{font-size:.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--c30);margin-top:2px;font-weight:700;}
+.result-quote{font-size:.78rem;font-style:italic;color:var(--c60);margin-top:14px;padding-top:14px;border-top:1px solid var(--c08);line-height:1.5;}
+.result-btns{display:flex;flex-direction:column;gap:8px;width:100%;max-width:460px;}
+.result-btn-main{padding:15px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--blue),var(--blue2));color:white;font-family:'Nunito',sans-serif;font-weight:800;font-size:.92rem;cursor:pointer;transition:all .2s;}
+.result-btn-main:hover{transform:translateY(-2px);}
+.result-btn-ghost{padding:14px;border-radius:13px;border:1px solid var(--c15);background:transparent;color:var(--c60);font-family:'Nunito',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .2s;}
+.result-btn-ghost:hover{background:var(--c08);color:var(--cream);}
+
+/* PROGRESS */
+#screen-progress{background:var(--bg);}
+.prog-hero{background:linear-gradient(135deg,var(--s2),var(--s3));border:1px solid var(--c15);border-radius:18px;padding:22px;margin:16px 20px;}
+.prog-level{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--cream);margin-bottom:4px;}
+.prog-body{padding:16px 20px;overflow-y:auto;}
+.prog-streak-row{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:24px;}
+.streak-day{height:38px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;}
+.streak-day.done{background:linear-gradient(135deg,var(--blue),var(--gold));color:white;}
+.streak-day.today{background:var(--c08);border:1px solid var(--gold);color:var(--gold);}
+.streak-day.empty{background:var(--c08);color:var(--c30);}
+.prog-cats{display:flex;flex-direction:column;gap:10px;}
+.prog-cat-row{background:var(--s1);border-radius:12px;padding:14px 16px;}
+.prog-cat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prog-cat-name{font-weight:700;font-size:.88rem;color:var(--cream);}
+.prog-cat-pct{font-size:.72rem;font-weight:800;color:var(--gold);}
+.prog-bar{height:5px;background:var(--c08);border-radius:3px;overflow:hidden;}
+.prog-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--gold));transition:width .8s ease;}
+
+/* WELCOME */
+#welcome-overlay{position:fixed;inset:0;background:rgba(5,8,15,0.97);display:flex;align-items:center;justify-content:center;z-index:2000;padding:16px;overflow-y:auto;}
+.welcome-box{background:linear-gradient(145deg,#0a1020,#101828);border:1px solid rgba(42,92,170,0.35);border-radius:26px;padding:32px 26px;max-width:480px;width:100%;}
+.welcome-logo{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:white;margin-bottom:4px;}
+.welcome-logo span{background:linear-gradient(135deg,#4a7fd4,#c9a844);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.welcome-sub{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:rgba(238,242,248,0.3);margin-bottom:24px;}
+.welcome-section{margin-bottom:20px;}
+.welcome-section-title{font-size:.62rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.welcome-steps{display:flex;flex-direction:column;gap:8px;}
+.welcome-step{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,0.04);border-radius:12px;padding:12px 14px;}
+.welcome-step-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px;}
+.welcome-step-text{font-size:.82rem;color:rgba(238,242,248,0.8);line-height:1.5;}
+.welcome-step-text strong{color:var(--cream);}
+.welcome-levels{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;}
+.welcome-level{background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 6px;text-align:center;font-size:.68rem;color:rgba(238,242,248,0.6);}
+.welcome-level span{display:block;font-size:1.1rem;margin-bottom:3px;}
+.welcome-downloads{display:flex;flex-direction:column;gap:6px;}
+.welcome-dl-btn{display:flex;align-items:center;gap:10px;background:rgba(42,92,170,0.08);border:1px solid rgba(42,92,170,0.25);border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;color:var(--blue2);font-size:.82rem;font-weight:700;text-align:left;width:100%;}
+.welcome-dl-btn:hover{background:rgba(42,92,170,0.18);border-color:rgba(42,92,170,0.5);}
+.welcome-dl-icon{font-size:1.2rem;flex-shrink:0;}
+.welcome-start-btn{width:100%;padding:16px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--blue),var(--blue2));color:white;font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;margin-top:20px;transition:all .2s;}
+.welcome-start-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(42,92,170,0.4);}
+.help-btn{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:rgba(42,92,170,0.15);border:1px solid rgba(42,92,170,0.35);color:var(--blue2);font-size:1.1rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:500;transition:all .2s;font-family:'Nunito',sans-serif;}
+.help-btn:hover{background:rgba(42,92,170,0.3);transform:scale(1.1);}
+.pdf-toast{position:fixed;bottom:80px;right:20px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:white;padding:10px 18px;border-radius:20px;font-size:.8rem;font-weight:700;z-index:1000;opacity:0;transition:opacity .3s;pointer-events:none;}
+.pdf-toast.show{opacity:1;}
+
+/* LEVELUP */
+#levelup-overlay{position:fixed;inset:0;background:rgba(5,8,15,0.93);display:flex;align-items:center;justify-content:center;z-index:1000;}
+.levelup-box{background:linear-gradient(145deg,var(--s2),var(--s3));border:2px solid var(--gold);border-radius:28px;padding:44px 36px;text-align:center;max-width:340px;animation:pop .4s ease;}
+.levelup-title{font-size:.7rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.levelup-icon{font-size:3.5rem;margin-bottom:12px;}
+.levelup-name{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--cream);margin-bottom:8px;}
+.levelup-sub{font-size:.82rem;color:var(--c60);line-height:1.5;margin-bottom:24px;}
+.levelup-btn{width:100%;padding:14px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--blue),var(--gold));color:white;font-family:'Nunito',sans-serif;font-weight:800;font-size:.92rem;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<!-- DASHBOARD -->
+<div id="screen-dash" class="screen">
+  <div class="dash-hero">
+    <div class="dash-top">
+      <div>
+        <div class="dash-greeting">Rise Up, Nina · Bem-vinda de volta</div>
+        <div class="dash-name">Hello, <span>Nina</span> 👋</div>
+      </div>
+      <div class="streak-widget">
+        <div class="streak-fire">🔥</div>
+        <div class="streak-num" id="dash-streak">0</div>
+        <div class="streak-label">days · dias</div>
+      </div>
+    </div>
+    <div class="level-row">
+      <div class="level-badge">Lv. <span id="dash-level-num">1</span></div>
+      <div class="level-name" id="dash-level-name">📋 Trainee</div>
+    </div>
+    <div class="xp-bar-wrap">
+      <div class="xp-labels">
+        <span class="xp-label"><span id="dash-xp">0</span> XP</span>
+        <span class="xp-label" id="dash-xp-next">200 XP</span>
+      </div>
+      <div class="xp-bar"><div class="xp-fill" id="dash-xp-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="motivacion" id="dash-quote"></div>
+  <div class="dash-body">
+    <div class="section-title">Daily Challenge · Desafio do dia</div>
+    <div class="daily-card" onclick="startDaily()">
+      <div class="daily-xp">+80 XP</div>
+      <div class="daily-top"><span class="daily-icon">⚡</span><div class="daily-title">Daily Challenge</div></div>
+      <div class="daily-sub">10 mixed questions · 5 minutes · Streak guaranteed</div>
+    </div>
+    <div class="section-title">Categories · Categorias</div>
+    <div class="cat-grid" id="cat-grid"></div>
+    <button class="progress-screen-btn" onclick="showProgress()">📊 My Progress · Meu Progresso</button>
+  </div>
+</div>
+
+<!-- CATEGORY -->
+<div id="screen-cat" class="screen hidden">
+  <div class="cat-header">
+    <div class="back-row">
+      <button class="back-btn" onclick="showDash()">←</button>
+      <div style="font-size:.72rem;color:var(--c30);font-weight:700;letter-spacing:2px;text-transform:uppercase;">Category · Categoria</div>
+    </div>
+    <div class="cat-header-icon" id="cat-h-icon"></div>
+    <div class="cat-header-title" id="cat-h-title"></div>
+    <div class="cat-header-sub" id="cat-h-sub"></div>
+  </div>
+  <div class="topic-list" id="topic-list"></div>
+</div>
+
+<!-- LESSON -->
+<div id="screen-lesson" class="screen hidden">
+  <div class="lesson-top">
+    <button class="back-btn" onclick="backFromLesson()">←</button>
+    <div class="lesson-bar-wrap">
+      <div class="lesson-bar"><div class="lesson-bar-fill" id="lesson-bar-fill" style="width:0%"></div></div>
+    </div>
+    <div class="lesson-badges">
+      <div class="mini-badge" id="lesson-streak-badge">🔥0</div>
+      <div class="mini-badge" id="lesson-score-badge">⭐0/0</div>
+    </div>
+  </div>
+  <div class="lesson-body" id="lesson-body"></div>
+</div>
+
+<!-- RESULT -->
+<div id="screen-result" class="screen hidden">
+  <div class="result-card">
+    <div class="result-emoji" id="res-emoji">🏆</div>
+    <div class="result-title" id="res-title">Excellent!</div>
+    <div class="result-pct" id="res-pct">100%</div>
+    <div class="xp-earned" id="res-xp">+50 XP</div>
+    <div class="result-stats">
+      <div class="rstat"><div class="rstat-v" id="rs-correct">0</div><div class="rstat-l">Correct</div></div>
+      <div class="rstat"><div class="rstat-v" id="rs-wrong">0</div><div class="rstat-l">Wrong</div></div>
+      <div class="rstat"><div class="rstat-v" id="rs-streak">0</div><div class="rstat-l">Streak</div></div>
+    </div>
+    <div class="result-quote" id="res-quote"></div>
+  </div>
+  <div class="result-btns">
+    <button class="result-btn-main" onclick="repeatLesson()">🔄 Try again · Repetir</button>
+    <button class="result-btn-ghost" onclick="showDash()">← Home · Início</button>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div id="screen-progress" class="screen hidden">
+  <div class="cat-header">
+    <div class="back-row">
+      <button class="back-btn" onclick="showDash()">←</button>
+      <div style="font-size:.72rem;color:var(--c30);font-weight:700;letter-spacing:2px;text-transform:uppercase;">My Progress · Meu Progresso</div>
+    </div>
+    <div class="cat-header-icon">📊</div>
+    <div class="cat-header-title">Nina's Progress</div>
+    <div class="cat-header-sub">Your path to professional English · Seu caminho para o inglês profissional</div>
+  </div>
+  <div class="prog-body">
+    <div class="prog-hero">
+      <div class="prog-level" id="prog-level-name"></div>
+      <div style="font-size:.75rem;color:var(--c60);margin-bottom:12px;" id="prog-xp-text"></div>
+      <div class="xp-bar"><div class="xp-fill" id="prog-xp-fill" style="width:0%"></div></div>
+    </div>
+    <div class="section-title">Streak · Sequência — last 7 days</div>
+    <div class="prog-streak-row" id="prog-streak-row"></div>
+    <div class="section-title">Progress by category · Progresso por categoria</div>
+    <div class="prog-cats" id="prog-cats"></div>
+  </div>
+</div>
+
+<!-- WELCOME -->
+<div id="welcome-overlay">
+  <div class="welcome-box">
+    <div class="welcome-logo">Nina's <span>English</span></div>
+    <div class="welcome-sub">🇧🇷 Rise Up · Professional English</div>
+    <div class="welcome-section">
+      <div class="welcome-section-title">👋 Como funciona? · How does it work?</div>
+      <div class="welcome-steps">
+        <div class="welcome-step">
+          <span class="welcome-step-icon">📁</span>
+          <div class="welcome-step-text"><strong>Escolha uma categoria</strong> — Jurídico, bancário, entrevistas, séries... Cada uma tem vocabulário real do mundo profissional.</div>
+        </div>
+        <div class="welcome-step">
+          <span class="welcome-step-icon">🇬🇧🇺🇸</span>
+          <div class="welcome-step-text"><strong>Inglês britânico E americano</strong> — Quando há diferença, você vê as duas versões. <em>lift 🇬🇧 / elevator 🇺🇸</em>. Nunca mais ficará confusa!</div>
+        </div>
+        <div class="welcome-step">
+          <span class="welcome-step-icon">⭐</span>
+          <div class="welcome-step-text"><strong>Ganhe XP e suba na carreira</strong> — De Trainee a Queen's Counsel. Cada resposta certa é um passo à frente.</div>
+        </div>
+        <div class="welcome-step">
+          <span class="welcome-step-icon">🔥</span>
+          <div class="welcome-step-text"><strong>5 minutos por dia</strong> são suficientes. Annalise Keating não parou de estudar. <em>Você também não vai parar.</em></div>
+        </div>
+      </div>
+    </div>
+    <div class="welcome-section">
+      <div class="welcome-section-title">🏆 Sua carreira em inglês</div>
+      <div class="welcome-levels">
+        <div class="welcome-level"><span>📋</span>Trainee</div>
+        <div class="welcome-level"><span>⚖️</span>Associate</div>
+        <div class="welcome-level"><span>📜</span>Senior Assoc.</div>
+        <div class="welcome-level"><span>💼</span>Partner</div>
+        <div class="welcome-level"><span>🏛️</span>Mng. Partner</div>
+        <div class="welcome-level"><span>👑</span>Queen's Counsel</div>
+      </div>
+    </div>
+    <div class="welcome-section">
+      <div class="welcome-section-title">⬇️ Download materials · Baixar materiais</div>
+      <div class="welcome-downloads">
+        <button class="welcome-dl-btn" onclick="pdfLegalBusiness()"><span class="welcome-dl-icon">⚖️</span>Legal & Business vocabulary</button>
+        <button class="welcome-dl-btn" onclick="pdfBritishAmerican()"><span class="welcome-dl-icon">🇬🇧🇺🇸</span>British vs American English</button>
+        <button class="welcome-dl-btn" onclick="pdfFalseFreinds()"><span class="welcome-dl-icon">⚠️</span>False Friends PT → EN</button>
+        <button class="welcome-dl-btn" onclick="pdfJobEnglish()"><span class="welcome-dl-icon">💼</span>Job Search English · Procurar emprego</button>
+      </div>
+    </div>
+    <button class="welcome-start-btn" onclick="closeWelcome()">Let's go, Nina! → Rise Up! 🚀</button>
+  </div>
+</div>
+
+<button class="help-btn" onclick="openWelcome()" title="Help · Ajuda">?</button>
+<div class="pdf-toast" id="pdf-toast">⬇️ PDF generated!</div>
+
+<!-- LEVELUP -->
+<div id="levelup-overlay" class="hidden">
+  <div class="levelup-box">
+    <div class="levelup-title">Level Up! · Subiu de nível!</div>
+    <div class="levelup-icon" id="lu-icon">⚖️</div>
+    <div class="levelup-name" id="lu-name">Associate</div>
+    <div class="levelup-sub" id="lu-sub"></div>
+    <button class="levelup-btn" onclick="closeLevelUp()">Keep going · Continuar →</button>
+  </div>
+</div>
+
+<script>
+// ===================== DATA =====================
+const CATS = [
+  {
+    id:'legal', icon:'⚖️', label:'Legal & Business English', color:'#c9a844',
+    desc:'Contracts, negotiation, debt collection, court',
+    topics:[
+      { id:'legal-vocab', icon:'📜', label:'Legal vocabulary', items:[
+        {pt:'Contrato',en:'Contract',note:null},
+        {pt:'Cláusula',en:'Clause',note:null},
+        {pt:'Rescisão de contrato',en:'Termination of contract · Breach of contract',note:null},
+        {pt:'Réu / Acusado',en:'🇬🇧 Defendant / Accused · 🇺🇸 Defendant',note:null},
+        {pt:'Advogado/a',en:'🇬🇧 Solicitor / Barrister · 🇺🇸 Attorney / Lawyer',note:'UK: solicitor=escritório, barrister=tribunal'},
+        {pt:'Prova / Evidência',en:'Evidence / Proof',note:null},
+        {pt:'Sentença',en:'Sentence / Ruling / Verdict',note:'Ruling=decisão judicial, Verdict=júri'},
+        {pt:'Recurso',en:'Appeal',note:null},
+        {pt:'Prazo legal',en:'Legal deadline / Statutory deadline',note:null},
+        {pt:'Representação legal',en:'Legal representation',note:null},
+        {pt:'Testemunha',en:'Witness',note:null},
+        {pt:'Acordo extrajudicial',en:'Out-of-court settlement',note:null},
+      ]},
+      { id:'debt', icon:'💳', label:'Debt collection & negotiation', items:[
+        {pt:'Dívida',en:'Debt',note:null},
+        {pt:'Devedor / Inadimplente',en:'Debtor / Defaulter',note:null},
+        {pt:'Credor',en:'Creditor',note:null},
+        {pt:'Renegociação de dívida',en:'Debt restructuring / Debt renegotiation',note:null},
+        {pt:'Juros de mora',en:'Late payment interest / Default interest',note:null},
+        {pt:'Prazo de pagamento',en:'Payment deadline / Payment terms',note:null},
+        {pt:'Inadimplência',en:'Default / Non-payment',note:null},
+        {pt:'Penhora',en:'🇬🇧 Seizure / Distraint · 🇺🇸 Attachment / Levy',note:null},
+        {pt:'Quita parcial',en:'Partial debt write-off / Haircut',note:'"Haircut" é o termo financeiro internacional'},
+        {pt:'Acordo de pagamento',en:'Payment agreement / Repayment plan',note:null},
+        {pt:'Notificação de cobrança',en:'Demand letter / Debt notice',note:null},
+        {pt:'Processo de insolvência',en:'🇬🇧 Insolvency proceedings · 🇺🇸 Bankruptcy proceedings',note:null},
+      ]},
+      { id:'negotiation', icon:'🤝', label:'Negotiation & meetings', items:[
+        {pt:'Proposta',en:'Proposal / Offer',note:null},
+        {pt:'Contra-proposta',en:'Counter-proposal / Counter-offer',note:null},
+        {pt:'Chegamos a um acordo',en:'We have reached an agreement',note:null},
+        {pt:'Condições do contrato',en:'Terms and conditions · T&Cs',note:'T&Cs é a abreviação muito usada'},
+        {pt:'Prazo de negociação',en:'Negotiation deadline',note:null},
+        {pt:'Partes envolvidas',en:'Parties involved / Stakeholders',note:null},
+        {pt:'Confidencialidade',en:'Confidentiality / NDA (Non-disclosure agreement)',note:null},
+        {pt:'Em nome do meu cliente',en:'On behalf of my client',note:null},
+        {pt:'Sem prejuízo',en:'Without prejudice',note:'Frase legal muito importante em negociações UK'},
+        {pt:'Sujeito a contrato',en:'Subject to contract',note:'Frase usada antes de fechar acordo'},
+        {pt:'Aceito os termos',en:'I accept the terms',note:null},
+        {pt:'Reservo-me o direito de...',en:'I reserve the right to...',note:null},
+      ]},
+    ]
+  },
+  {
+    id:'banking', icon:'🏦', label:'Banking & Finance', color:'#4a7fd4',
+    desc:'Financial vocabulary, banking, investment',
+    topics:[
+      { id:'bank-vocab', icon:'💰', label:'Banking vocabulary', items:[
+        {pt:'Conta bancária',en:'Bank account',note:null},
+        {pt:'Extrato bancário',en:'🇬🇧 Bank statement · 🇺🇸 Account statement',note:null},
+        {pt:'Transferência bancária',en:'🇬🇧 Bank transfer / BACS · 🇺🇸 Wire transfer',note:null},
+        {pt:'Saldo',en:'Balance',note:null},
+        {pt:'Descoberto / Saldo negativo',en:'🇬🇧 Overdraft · 🇺🇸 Overdraft',note:'Igual, mas UK usa mais "in the red"'},
+        {pt:'Hipoteca',en:'🇬🇧 Mortgage · 🇺🇸 Mortgage / Home loan',note:null},
+        {pt:'Taxa de juro',en:'Interest rate',note:null},
+        {pt:'Empréstimo',en:'Loan',note:null},
+        {pt:'Garantia',en:'Guarantee / Collateral',note:'Collateral = garantia material'},
+        {pt:'Investimento',en:'Investment',note:null},
+        {pt:'Amortização',en:'Amortisation 🇬🇧 / Amortization 🇺🇸',note:'Atenção à ortografia diferente'},
+        {pt:'Liquidez',en:'Liquidity',note:null},
+      ]},
+      { id:'finance', icon:'📈', label:'Financial terms', items:[
+        {pt:'Balanço',en:'Balance sheet',note:null},
+        {pt:'Lucro',en:'Profit / Earnings',note:null},
+        {pt:'Prejuízo',en:'Loss',note:null},
+        {pt:'Receita',en:'Revenue / Turnover 🇬🇧',note:'UK: turnover; US: revenue'},
+        {pt:'Fluxo de caixa',en:'Cash flow',note:null},
+        {pt:'Ativo / Passivo',en:'Asset / Liability',note:null},
+        {pt:'Ações',en:'🇬🇧 Shares · 🇺🇸 Stocks',note:'Diferença importante!'},
+        {pt:'Dividendos',en:'Dividends',note:null},
+        {pt:'Capital de giro',en:'🇬🇧 Working capital · 🇺🇸 Working capital',note:null},
+        {pt:'Auditoria',en:'Audit',note:null},
+        {pt:'Tributação',en:'Taxation',note:null},
+        {pt:'IVA / Imposto sobre valor agregado',en:'🇬🇧 VAT · 🇺🇸 Sales tax',note:'Sistemas diferentes!'},
+      ]},
+    ]
+  },
+  {
+    id:'jobsearch', icon:'💼', label:'Job Search English', color:'#44aa77',
+    desc:'Interviews, CV, emails, LinkedIn',
+    topics:[
+      { id:'interview', icon:'🎤', label:'Job interviews', items:[
+        {pt:'Tenho experiência em...',en:'I have experience in...',note:null},
+        {pt:'Sou formada em Direito',en:'I have a degree in Law · I studied Law',note:null},
+        {pt:'Trabalho bem sob pressão',en:'I work well under pressure',note:null},
+        {pt:'Tenho habilidades de negociação',en:'I have strong negotiation skills',note:null},
+        {pt:'Disponível de imediato',en:'Available immediately / Available at short notice 🇬🇧',note:null},
+        {pt:'Qual é o salário?',en:'What is the salary? / What does the role pay?',note:'A segunda é mais natural em entrevista'},
+        {pt:'Pontos fortes',en:'Strengths',note:null},
+        {pt:'Onde me vejo em 5 anos',en:'Where do I see myself in 5 years',note:'Pergunta clássica de entrevista!'},
+        {pt:'Por que quer este trabalho?',en:'Why do you want this role?',note:null},
+        {pt:'Referências profissionais',en:'Professional references · Referees 🇬🇧',note:null},
+        {pt:'Período de aviso prévio',en:'🇬🇧 Notice period · 🇺🇸 Two weeks notice',note:null},
+        {pt:'Contrato de trabalho',en:'Employment contract · Contract of employment 🇬🇧',note:null},
+      ]},
+      { id:'cv-email', icon:'📄', label:'CV & professional emails', items:[
+        {pt:'Currículo',en:'🇬🇧 CV (Curriculum Vitae) · 🇺🇸 Résumé',note:'MUITO importante: UK sempre CV, US sempre Résumé'},
+        {pt:'Carta de motivação',en:'🇬🇧 Covering letter · 🇺🇸 Cover letter',note:null},
+        {pt:'Experiência profissional',en:'Work experience / Professional experience',note:null},
+        {pt:'Formação académica',en:'🇬🇧 Education / Qualifications · 🇺🇸 Education',note:null},
+        {pt:'Competências',en:'Skills / Competencies',note:null},
+        {pt:'Referências disponíveis',en:'References available upon request',note:'Frase padrão de CV'},
+        {pt:'Venho por este meio...',en:'I am writing to... / I am contacting you regarding...',note:null},
+        {pt:'Agradeço antecipadamente',en:'Thank you in advance / I look forward to hearing from you',note:null},
+        {pt:'Com os melhores cumprimentos',en:'🇬🇧 Kind regards / Yours sincerely · 🇺🇸 Best regards / Sincerely',note:null},
+        {pt:'Em anexo',en:'Please find attached / Attached please find 🇺🇸',note:null},
+        {pt:'Fico à disposição',en:'Please do not hesitate to contact me',note:'Frase muito formal e profissional'},
+        {pt:'Conforme acordado',en:'As agreed / As per our conversation',note:null},
+      ]},
+      { id:'linkedin', icon:'🔗', label:'LinkedIn & networking', items:[
+        {pt:'Conectar profissionalmente',en:'To connect professionally / To network',note:null},
+        {pt:'Gostaria de me conectar',en:'I would like to connect with you',note:null},
+        {pt:'Perfil profissional',en:'Professional profile',note:null},
+        {pt:'Recomendação profissional',en:'Professional recommendation / Endorsement',note:null},
+        {pt:'Oportunidade de emprego',en:'Job opportunity / Career opportunity',note:null},
+        {pt:'Recrutador',en:'Recruiter / Headhunter',note:null},
+        {pt:'Setor',en:'Industry / Sector',note:null},
+        {pt:'Empresa',en:'Company / Firm (para escritórios de advocacia)',note:null},
+        {pt:'Cargo / Posição',en:'Role / Position / Title',note:null},
+        {pt:'Trabalho remoto / híbrido',en:'Remote / Hybrid working 🇬🇧 · Remote / Hybrid work 🇺🇸',note:null},
+      ]},
+    ]
+  },
+  {
+    id:'comms', icon:'📞', label:'Professional Communication', color:'#9944dd',
+    desc:'Calls, meetings, presentations, emails',
+    topics:[
+      { id:'calls', icon:'📱', label:'Phone calls & meetings', items:[
+        {pt:'Bom dia, estou ligando para...',en:'Good morning, I am calling regarding...',note:null},
+        {pt:'Pode falar mais devagar?',en:'Could you speak more slowly, please?',note:null},
+        {pt:'Não entendi bem',en:'I did not quite catch that / Could you repeat that?',note:null},
+        {pt:'Deixa recado',en:'Please leave a message',note:null},
+        {pt:'Vou ligar de volta',en:'I will call you back / I will return your call',note:null},
+        {pt:'Linha ocupada',en:'The line is busy 🇺🇸 / Engaged 🇬🇧',note:'UK diz "engaged", US diz "busy"'},
+        {pt:'Reunião agendada',en:'Scheduled meeting / Meeting booked',note:null},
+        {pt:'Ordem do dia',en:'Agenda / Meeting agenda',note:null},
+        {pt:'Ata da reunião',en:'Minutes of the meeting',note:null},
+        {pt:'Adiar a reunião',en:'To reschedule / To postpone the meeting',note:null},
+        {pt:'Conferência / Videoconferência',en:'Conference call / Video call',note:null},
+        {pt:'Partilhar o ecrã',en:'To share the screen',note:null},
+      ]},
+      { id:'smalltalk', icon:'☕', label:'Small talk & office English', items:[
+        {pt:'Como vai o trabalho?',en:'How is work going? / How are things at work?',note:null},
+        {pt:'Está muito ocupada',en:'I am very busy / I have a lot on my plate',note:'"A lot on my plate" é muito natural'},
+        {pt:'Prazo apertado',en:'Tight deadline',note:null},
+        {pt:'Fim de semana',en:'🇬🇧 Weekend / At the weekend · 🇺🇸 On the weekend',note:'Preposição diferente!'},
+        {pt:'Trabalho em equipa',en:'🇬🇧 Teamwork · 🇺🇸 Teamwork',note:'Igual, mas UK escreve "teamwork"'},
+        {pt:'Pausa para o café',en:'🇬🇧 Coffee break / Tea break · 🇺🇸 Coffee break',note:null},
+        {pt:'Horas extras',en:'Overtime',note:null},
+        {pt:'Férias',en:'🇬🇧 Holiday(s) · 🇺🇸 Vacation',note:'DIFERENÇA IMPORTANTE'},
+        {pt:'Licença por doença',en:'🇬🇧 Sick leave · 🇺🇸 Sick day(s)',note:null},
+        {pt:'Colega de trabalho',en:'Colleague / Co-worker',note:null},
+      ]},
+    ]
+  },
+  {
+    id:'care', icon:'🤝', label:'Care & Hospitality', color:'#dd8844',
+    desc:'Elderly care, cleaning, hospitality sector',
+    topics:[
+      { id:'elderly', icon:'👴', label:'Elderly & social care', items:[
+        {pt:'Cuidado de idosos',en:'Elderly care / Senior care',note:null},
+        {pt:'Assistência domiciliar',en:'Home care / Domiciliary care 🇬🇧',note:null},
+        {pt:'Tomar a medicação',en:'To take medication / To take one\'s medicine',note:null},
+        {pt:'Mobilidade reduzida',en:'Limited mobility / Reduced mobility',note:null},
+        {pt:'Cuidador/a',en:'Carer 🇬🇧 / Caregiver 🇺🇸',note:'DIFERENÇA IMPORTANTE'},
+        {pt:'Serviços sociais',en:'Social services',note:null},
+        {pt:'Residência de idosos',en:'🇬🇧 Care home / Nursing home · 🇺🇸 Nursing home',note:null},
+        {pt:'Familiar responsável',en:'Next of kin / Primary carer',note:'"Next of kin" é o termo legal'},
+        {pt:'Acompanhar ao médico',en:'To accompany to the doctor / To take to a medical appointment',note:null},
+        {pt:'Emergência médica',en:'Medical emergency',note:null},
+      ]},
+      { id:'hospitality', icon:'🍽️', label:'Hospitality & cleaning', items:[
+        {pt:'Mesa para dois',en:'A table for two',note:null},
+        {pt:'A conta, por favor',en:'🇬🇧 The bill, please · 🇺🇸 The check, please',note:'DIFERENÇA CLÁSSICA'},
+        {pt:'Carta / Menu',en:'🇬🇧 Menu · 🇺🇸 Menu',note:null},
+        {pt:'Prato do dia',en:'🇬🇧 Dish of the day / Specials · 🇺🇸 Today\'s specials',note:null},
+        {pt:'Para levar',en:'🇬🇧 Takeaway · 🇺🇸 To go / Takeout',note:'DIFERENÇA IMPORTANTE'},
+        {pt:'Gorjeta',en:'🇬🇧 Tip · 🇺🇸 Tip / Gratuity',note:null},
+        {pt:'Turno / Jornada',en:'Shift',note:null},
+        {pt:'Limpeza',en:'Cleaning / Housekeeping',note:'Housekeeping é o termo em hotéis'},
+        {pt:'Aspirador',en:'🇬🇧 Hoover / Vacuum cleaner · 🇺🇸 Vacuum cleaner',note:'"To hoover" é verbo em UK!'},
+        {pt:'Produto de limpeza',en:'Cleaning product / Cleaning supplies',note:null},
+      ]},
+    ]
+  },
+  {
+    id:'series', icon:'🎬', label:'Series & Legal Drama', color:'#dd4488',
+    desc:'HTGAWM, Suits, The Good Wife, Bridgerton',
+    topics:[
+      { id:'htgawm-en', icon:'⚖️', label:'How to Get Away with Murder', items:[
+        {pt:'Não é culpado/a',en:'Not guilty',context:'Classic courtroom verdict'},
+        {pt:'Preciso de provas',en:'I need evidence / I need proof',context:'Annalise building her case'},
+        {pt:'Você está mentindo',en:'You are lying / You are not telling the truth',context:'Cross-examination'},
+        {pt:'Me oponho',en:'Objection! / I object!',context:'Courtroom — very dramatic!'},
+        {pt:'Isso é inadmissível',en:'This is inadmissible',context:'Excluding evidence'},
+        {pt:'Sou sua advogada',en:'I am your attorney 🇺🇸 / I am your solicitor 🇬🇧',context:'Annalise to clients'},
+        {pt:'Não responda a isso',en:'Do not answer that',context:'Lawyer protecting client'},
+        {pt:'Tenho que defender meu cliente',en:'I have to defend my client',context:null},
+        {pt:'Sem comentários',en:'No comment',context:'Standard legal response to press'},
+        {pt:'Direito de permanecer em silêncio',en:'Right to remain silent',context:'Miranda rights'},
+      ]},
+      { id:'suits', icon:'👔', label:'Suits & The Good Wife', items:[
+        {pt:'Fechar o acordo',en:'Close the deal / Seal the deal',note:'Expressão muito usada em negócios'},
+        {pt:'Estou dentro',en:'I\'m in',note:'Linguagem informal de negócios'},
+        {pt:'Está sob pressão',en:'Under pressure / In a tight spot',note:null},
+        {pt:'Assumo a responsabilidade',en:'I take responsibility / I own this',note:'"I own this" é moderno e forte'},
+        {pt:'Isso não é negociável',en:'This is non-negotiable',note:null},
+        {pt:'Preciso de mais tempo',en:'I need more time / I need an extension',note:null},
+        {pt:'Chame meu advogado',en:'Call my lawyer 🇺🇸 / Call my solicitor 🇬🇧',note:null},
+        {pt:'Pro bono',en:'Pro bono',note:'Trabalho jurídico gratuito — igual nos dois!'},
+        {pt:'Alta finança',en:'High finance / Investment banking',note:null},
+        {pt:'Sócio/a',en:'Partner (in a law firm)',note:null},
+      ]},
+      { id:'bridgerton-en', icon:'👑', label:'Bridgerton · Period drama', items:[
+        {pt:'Escândalo',en:'Scandal',note:'Quase igual ao português!'},
+        {pt:'Sociedade',en:'Society',note:null},
+        {pt:'Rumores',en:'Rumours 🇬🇧 / Rumors 🇺🇸',note:'Ortografia diferente'},
+        {pt:'Casamento por conveniência',en:'Marriage of convenience',note:null},
+        {pt:'Guardar as aparências',en:'Keep up appearances',note:'Expressão muito usada ainda hoje'},
+        {pt:'Posição social',en:'Social standing / Social position',note:null},
+        {pt:'Temporada social',en:'Season (social season)',note:null},
+        {pt:'Me surpreende',en:'You surprise me / I am surprised',note:null},
+        {pt:'Não é de boa família',en:'Not from a good family / Of low birth',note:null},
+        {pt:'Honra',en:'Honour 🇬🇧 / Honor 🇺🇸',note:'Ortografia diferente'},
+      ]},
+    ]
+  },
+  {
+    id:'brit-am', icon:'🇬🇧', label:'British vs American', color:'#44bbdd',
+    desc:'Key differences you must know',
+    topics:[
+      { id:'vocab-diff', icon:'📖', label:'Vocabulary differences', items:[
+        {pt:'Elevador',en:'🇬🇧 Lift · 🇺🇸 Elevator',note:'Diferença clássica'},
+        {pt:'Apartamento',en:'🇬🇧 Flat · 🇺🇸 Apartment',note:'Diferença clássica'},
+        {pt:'Currículo',en:'🇬🇧 CV · 🇺🇸 Résumé',note:'CRÍTICO para busca de emprego'},
+        {pt:'Advogado/a',en:'🇬🇧 Solicitor/Barrister · 🇺🇸 Attorney/Lawyer',note:null},
+        {pt:'Férias',en:'🇬🇧 Holiday · 🇺🇸 Vacation',note:'Diferença muito comum'},
+        {pt:'Cuidador/a',en:'🇬🇧 Carer · 🇺🇸 Caregiver',note:null},
+        {pt:'Ações (bolsa)',en:'🇬🇧 Shares · 🇺🇸 Stocks',note:null},
+        {pt:'Conta bancária (débito)',en:'🇬🇧 Current account · 🇺🇸 Checking account',note:null},
+        {pt:'Para levar (comida)',en:'🇬🇧 Takeaway · 🇺🇸 To go / Takeout',note:null},
+        {pt:'Celular / Telemóvel',en:'🇬🇧 Mobile (phone) · 🇺🇸 Cell phone',note:null},
+        {pt:'Curriculum (verbo)',en:'🇬🇧 CV · 🇺🇸 Résumé',note:null},
+        {pt:'Transferência bancária',en:'🇬🇧 Bank transfer/BACS · 🇺🇸 Wire transfer/ACH',note:null},
+      ]},
+      { id:'spelling', icon:'✏️', label:'Spelling & grammar differences', items:[
+        {pt:'Organizar',en:'🇬🇧 Organise · 🇺🇸 Organize',note:'UK: -ise / US: -ize'},
+        {pt:'Reconhecer',en:'🇬🇧 Recognise · 🇺🇸 Recognize',note:'Mesmo padrão -ise/-ize'},
+        {pt:'Cor',en:'🇬🇧 Colour · 🇺🇸 Color',note:'UK: -our / US: -or'},
+        {pt:'Favor',en:'🇬🇧 Favour · 🇺🇸 Favor',note:'Mesmo padrão -our/-or'},
+        {pt:'Centro',en:'🇬🇧 Centre · 🇺🇸 Center',note:'UK: -re / US: -er'},
+        {pt:'Acabei de fazer',en:'🇬🇧 I have just done it · 🇺🇸 I just did it',note:'UK usa present perfect, US usa past simple'},
+        {pt:'Já fiz',en:'🇬🇧 I have already done it · 🇺🇸 I already did it',note:'Mesmo padrão de tempo verbal'},
+        {pt:'No fim de semana',en:'🇬🇧 At the weekend · 🇺🇸 On the weekend',note:'Preposição diferente!'},
+        {pt:'Tens / Você tem',en:'🇬🇧 Have you got? · 🇺🇸 Do you have?',note:'UK usa "have got", US usa "have"'},
+        {pt:'Amortização',en:'🇬🇧 Amortisation · 🇺🇸 Amortization',note:'Mesmo padrão -ise/-ize'},
+      ]},
+    ]
+  },
+  {
+    id:'false-friends', icon:'⚠️', label:'False Friends PT → EN', color:'#dd6644',
+    desc:'Words that seem the same but are NOT',
+    topics:[
+      { id:'ff-main', icon:'🪤', label:'Beware of these words!', items:[
+        {pt:'Policia (parece "police"?)',en:'Police — CORRECT! ✓',note:'Mas atenção: "policeman/woman" ou "police officer"'},
+        {pt:'Eventual (parece "eventual"?)',en:'NOT eventual! Eventual = final/ultimate',note:'"Eventual" em PT = possível; em EN = final'},
+        {pt:'Pretender (parece "to pretend"?)',en:'NOT "to pretend"! Pretend = fingir',note:'"Pretender" em PT = ter intenção; EN = fingir'},
+        {pt:'Realizar (parece "to realise"?)',en:'NOT always! Realise = perceber / dar-se conta',note:'"Realizar" em PT = fazer; EN "realise" = perceber'},
+        {pt:'Assistir (parece "to assist"?)',en:'NOT assist! Assist = ajudar',note:'"Assistir" em PT = ver/assistir; EN = ajudar'},
+        {pt:'Borracha (parece "borracha"?)',en:'Rubber 🇬🇧 / Eraser 🇺🇸 — NOT drunk!',note:'"Borracha" em PT = elástico/goma; EN "drunk" = bêbado'},
+        {pt:'Parentes (parece "parents"?)',en:'NOT parents! Parents = pai e mãe',note:'"Parentes" em PT = familiares; EN "parents" = pais'},
+        {pt:'Polido (parece "polished"?)',en:'Polite = educado / Polished = refinado',note:'"Polido" em PT = educado; EN "polite" = educado ✓ (este é igual!)'},
+        {pt:'Gravidez (parece "gravity"?)',en:'NOT gravity! Gravity = gravidade',note:'"Gravidez" = pregnancy em inglês'},
+        {pt:'Largo (parece "large"?)',en:'NOT large! Large = grande',note:'"Largo" em PT = amplo/largo; EN "large" = grande'},
+        {pt:'Sensível (parece "sensible"?)',en:'NOT sensible! Sensible = prudente/razoável',note:'"Sensível" em PT = sensitive; "sensible" EN = prudente'},
+        {pt:'Actual (parece "actual"?)',en:'NOT actual! Actual = verdadeiro/real',note:'"Actual" em PT = current/present; EN "actual" = real/verdadeiro'},
+      ]},
+    ]
+  },
+];
+
+const LEVELS = [
+  {num:1,name:'Trainee',icon:'📋',min:0,max:200},
+  {num:2,name:'Associate',icon:'⚖️',min:200,max:500},
+  {num:3,name:'Senior Associate',icon:'📜',min:500,max:1000},
+  {num:4,name:'Partner',icon:'💼',min:1000,max:1800},
+  {num:5,name:'Managing Partner',icon:'🏛️',min:1800,max:2800},
+  {num:6,name:"Queen's Counsel",icon:'👑',min:2800,max:Infinity},
+];
+
+const QUOTES = [
+  'Annalise Keating spoke perfect English in every courtroom. <strong>You will too, Nina.</strong>',
+  'Em inglês profissional, cada palavra certa é um argumento ganho. <strong>Keep going.</strong>',
+  '"I object!" — the most powerful two words in a courtroom. <strong>Learn them in English.</strong>',
+  'The best lawyers in the world work in English. <strong>You are becoming one of them.</strong>',
+  'Suits, HTGAWM, The Good Wife — you already know the world. <strong>Now learn the language.</strong>',
+  'Cada dia de prática é uma entrevista que vai correr melhor. <strong>Rise Up, Nina.</strong>',
+  'British or American? Both. <strong>Nina knows both.</strong>',
+  'Harvey Specter never stopped studying. <strong>Neither does Nina.</strong>',
+  'Um contrato em inglês não tem segredos para você. <strong>Mais um dia, mais um passo.</strong>',
+  'The courtroom is yours. <strong>You just need the words.</strong>',
+];
+
+// ===================== STATE =====================
+let ST = {
+  xp:0,streak:0,lastLogin:null,
+  topicProgress:{},streakDays:[],
+  cards:[],idx:0,score:0,sessionStreak:0,maxSessionStreak:0,
+  flipped:false,selected:null,mode:null,
+  currentCatId:null,currentTopicId:null,topicIcon:'📚',
+  sessionXp:0,prevLevel:1,quizOpts:[],isDaily:false,
+};
+
+function save(){
+  localStorage.setItem('nina_en_xp',ST.xp);
+  localStorage.setItem('nina_en_streak',ST.streak);
+  localStorage.setItem('nina_en_lastLogin',ST.lastLogin||'');
+  localStorage.setItem('nina_en_topicProgress',JSON.stringify(ST.topicProgress));
+  localStorage.setItem('nina_en_streakDays',JSON.stringify(ST.streakDays));
+}
+function load(){
+  ST.xp=parseInt(localStorage.getItem('nina_en_xp')||'0');
+  ST.streak=parseInt(localStorage.getItem('nina_en_streak')||'0');
+  ST.lastLogin=localStorage.getItem('nina_en_lastLogin')||null;
+  try{ST.topicProgress=JSON.parse(localStorage.getItem('nina_en_topicProgress')||'{}');}catch(e){}
+  try{ST.streakDays=JSON.parse(localStorage.getItem('nina_en_streakDays')||'[]');}catch(e){}
+}
+function getLevel(xp){for(let i=LEVELS.length-1;i>=0;i--){if(xp>=LEVELS[i].min)return LEVELS[i];}return LEVELS[0];}
+function getLevelProgress(xp){const lv=getLevel(xp);if(lv.max===Infinity)return 100;return Math.round(((xp-lv.min)/(lv.max-lv.min))*100);}
+function checkStreak(){
+  const today=new Date().toISOString().split('T')[0];
+  if(!ST.lastLogin){ST.streak=1;ST.lastLogin=today;}
+  else{const last=new Date(ST.lastLogin);const now=new Date(today);const diff=Math.round((now-last)/(1000*60*60*24));if(diff===1)ST.streak++;else if(diff>1)ST.streak=1;ST.lastLogin=today;}
+  if(!ST.streakDays.includes(today)){ST.streakDays.push(today);if(ST.streakDays.length>30)ST.streakDays.shift();}
+  save();
+}
+function addXp(amount){const prev=getLevel(ST.xp);ST.xp+=amount;const next=getLevel(ST.xp);save();if(next.num>prev.num)showLevelUp(next);}
+function shuffle(arr){return [...arr].sort(()=>Math.random()-.5);}
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
+
+function showDash(){checkStreak();updateDashboard();show('screen-dash');}
+
+function updateDashboard(){
+  const lv=getLevel(ST.xp);const pct=getLevelProgress(ST.xp);
+  document.getElementById('dash-streak').textContent=ST.streak;
+  document.getElementById('dash-level-num').textContent=lv.num;
+  document.getElementById('dash-level-name').textContent=lv.icon+' '+lv.name;
+  document.getElementById('dash-xp').textContent=ST.xp;
+  document.getElementById('dash-xp-next').textContent=lv.max===Infinity?'Max':lv.max+' XP';
+  document.getElementById('dash-xp-fill').style.width=pct+'%';
+  document.getElementById('dash-quote').innerHTML=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  buildCatGrid();
+}
+
+function buildCatGrid(){
+  document.getElementById('cat-grid').innerHTML=CATS.map(cat=>{
+    const prog=getCatProgress(cat);
+    return `<div class="cat-card" onclick="openCat('${cat.id}')">
+      <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:${cat.color};border-radius:3px 0 0 3px;"></div>
+      <span class="cat-card-icon">${cat.icon}</span>
+      <div class="cat-card-name">${cat.label}</div>
+      <div class="cat-card-count">${cat.desc}</div>
+      <div class="cat-progress-mini"><div class="cat-progress-fill" style="width:${prog}%;background:${cat.color}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function getCatProgress(cat){
+  let total=0,done=0;
+  cat.topics.forEach(t=>{
+    const p=ST.topicProgress[t.id];
+    if(p)done+=Math.min(p.correct,t.items.length);
+    total+=t.items.length;
+  });
+  return total>0?Math.round((done/total)*100):0;
+}
+
+function openCat(catId){
+  ST.currentCatId=catId;
+  const cat=CATS.find(c=>c.id===catId);
+  document.getElementById('cat-h-icon').textContent=cat.icon;
+  document.getElementById('cat-h-title').textContent=cat.label;
+  document.getElementById('cat-h-sub').textContent=cat.desc;
+  document.getElementById('topic-list').innerHTML=cat.topics.map(topic=>{
+    const p=ST.topicProgress[topic.id];
+    const pct=p?Math.min(Math.round((p.correct/topic.items.length)*100),100):0;
+    const stars=pct>=100?'⭐⭐⭐':pct>=70?'⭐⭐':pct>=40?'⭐':'☆☆☆';
+    const bc=cat.color||'var(--blue)';
+    return `<div class="topic-item">
+      <div class="topic-header" onclick="toggleTopic('${topic.id}')">
+        <span class="topic-icon">${topic.icon}</span>
+        <div class="topic-info">
+          <div class="topic-name">${topic.label}</div>
+          <div class="topic-meta">${topic.items.length} items · ${stars}</div>
+        </div>
+        <span class="topic-chevron" id="chev-${topic.id}">›</span>
+      </div>
+      <div class="topic-body" id="tbody-${topic.id}">
+        <div class="topic-bar-wrap">
+          <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--c30);font-weight:700;"><span>Progress</span><span>${pct}%</span></div>
+          <div class="topic-bar"><div class="topic-bar-fill" style="width:${pct}%"></div></div>
+        </div>
+        <div class="topic-btns">
+          <button class="topic-btn" style="background:rgba(201,168,68,0.12);border:1px solid rgba(201,168,68,0.25);color:var(--gold)" onclick="startLesson('${cat.id}','${topic.id}','flash')">🃏 Flashcards</button>
+          <button class="topic-btn" style="background:${bc}22;border:1px solid ${bc}44;color:${bc}" onclick="startLesson('${cat.id}','${topic.id}','quiz')">🎯 Quiz</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  show('screen-cat');
+}
+
+function toggleTopic(id){
+  const body=document.getElementById('tbody-'+id);
+  const chev=document.getElementById('chev-'+id);
+  const isOpen=body.classList.contains('open');
+  document.querySelectorAll('.topic-body').forEach(b=>b.classList.remove('open'));
+  document.querySelectorAll('.topic-chevron').forEach(c=>c.classList.remove('open'));
+  if(!isOpen){body.classList.add('open');chev.classList.add('open');}
+}
+
+function startLesson(catId,topicId,mode){
+  const cat=CATS.find(c=>c.id===catId);
+  const topic=cat.topics.find(t=>t.id===topicId);
+  ST.currentCatId=catId;ST.currentTopicId=topicId;ST.topicIcon=topic.icon||'📚';
+  ST.cards=shuffle(topic.items);
+  ST.idx=0;ST.score=0;ST.sessionStreak=0;ST.maxSessionStreak=0;
+  ST.flipped=false;ST.selected=null;ST.mode=mode;ST.sessionXp=0;ST.isDaily=false;
+  show('screen-lesson');renderLesson();
+}
+
+function startDaily(){
+  const all=CATS.flatMap(c=>c.topics.flatMap(t=>t.items));
+  ST.cards=shuffle(all).slice(0,10);
+  ST.idx=0;ST.score=0;ST.sessionStreak=0;ST.maxSessionStreak=0;
+  ST.flipped=false;ST.selected=null;ST.mode='quiz';ST.sessionXp=0;ST.isDaily=true;
+  ST.currentTopicId='daily';ST.currentCatId=null;ST.topicIcon='⚡';
+  show('screen-lesson');renderLesson();
+}
+
+function renderLesson(){
+  const card=ST.cards[ST.idx];
+  const pct=ST.cards.length>0?(ST.idx/ST.cards.length)*100:0;
+  document.getElementById('lesson-bar-fill').style.width=pct+'%';
+  document.getElementById('lesson-streak-badge').textContent='🔥'+ST.sessionStreak;
+  document.getElementById('lesson-score-badge').textContent='⭐'+ST.score+'/'+ST.idx;
+  if(ST.mode==='flash')renderFlash(card);
+  else renderQuiz(card);
+}
+
+function renderFlash(card){
+  const hasVariants = card.en && card.en.includes('🇬🇧');
+  const enDisplay = hasVariants
+    ? card.en.split('·').map((v,i)=>{
+        const flag=i===0?'🇬🇧':'🇺🇸';
+        const label=i===0?'British':'American';
+        return `<div class="variant-row"><span class="variant-flag">${flag}</span><span class="variant-word">${v.replace(/🇬🇧|🇺🇸/g,'').trim()}</span><span class="variant-label">${label}</span></div>`;
+      }).join('')
+    : `<div class="flash-word">${card.en}</div>`;
+  document.getElementById('lesson-body').innerHTML=`
+    <div class="flash-scene" onclick="flipCard()">
+      <div class="flash-inner" id="flash-inner">
+        <div class="flash-face flash-front">
+          <span class="card-thumb">${ST.topicIcon}</span>
+          <div class="flash-lang">🇧🇷 Português</div>
+          <div class="flash-word">${card.pt}</div>
+          <div style="margin-top:12px;font-size:.68rem;color:var(--c30);">Tap to see in English →</div>
+        </div>
+        <div class="flash-face flash-back">
+          <span class="card-thumb">${ST.topicIcon}</span>
+          <div class="flash-lang">🇬🇧🇺🇸 English</div>
+          ${hasVariants?`<div class="flash-variants">${enDisplay}</div>`:`<div class="flash-word">${card.en}</div>`}
+          ${card.note?`<div class="flash-note">💡 ${card.note}</div>`:''}
+        </div>
+      </div>
+    </div>
+    <div class="flip-hint" id="flip-hint">👆 Tap the card to reveal</div>
+    <div class="knew-row hidden" id="knew-row">
+      <button class="knew-btn yes" onclick="flashNext(true)">✅ Got it! · Sabia!</button>
+      <button class="knew-btn no" onclick="flashNext(false)">📖 Review · Rever</button>
+    </div>`;
+  ST.flipped=false;
+}
+
+function flipCard(){
+  if(!ST.flipped){
+    document.getElementById('flash-inner').classList.add('flipped');
+    document.getElementById('flip-hint').classList.add('hidden');
+    document.getElementById('knew-row').classList.remove('hidden');
+    ST.flipped=true;
+  }
+}
+
+function flashNext(knew){
+  if(knew){ST.sessionStreak++;if(ST.sessionStreak>ST.maxSessionStreak)ST.maxSessionStreak=ST.sessionStreak;ST.score++;ST.sessionXp+=10;}
+  else ST.sessionStreak=0;
+  ST.idx++;
+  if(ST.idx>=ST.cards.length){endSession();return;}
+  renderLesson();
+}
+
+function renderQuiz(card){
+  const all=CATS.flatMap(c=>c.topics.flatMap(t=>t.items));
+  const others=shuffle(all.filter(w=>w.en!==card.en)).slice(0,3);
+  ST.quizOpts=shuffle([card,...others]);
+  const cleanEn=(en)=>en.replace(/🇬🇧|🇺🇸/g,'').replace(/·.*/,'').trim();
+  document.getElementById('lesson-body').innerHTML=`
+    <div class="quiz-q-box">
+      <span class="card-thumb">${ST.topicIcon}</span>
+      <div class="quiz-qlabel">🇧🇷 How do you say this in English?</div>
+      <div class="quiz-qword">${card.pt}</div>
+      ${card.context?`<div class="quiz-qctx">"${card.context}"</div>`:''}
+    </div>
+    <div class="quiz-opts">
+      ${ST.quizOpts.map((o,i)=>`<button class="quiz-opt" onclick="quizAnswer(${i})">${cleanEn(o.en)}</button>`).join('')}
+    </div>
+    <div class="quiz-note hidden" id="quiz-note"></div>
+    <button class="next-btn hidden" id="quiz-next-btn" onclick="quizNext()">Next · Próximo →</button>`;
+  ST.selected=null;
+}
+
+function quizAnswer(i){
+  if(ST.selected!==null)return;
+  ST.selected=i;
+  const card=ST.cards[ST.idx];
+  const correct=ST.quizOpts[i].en===card.en;
+  if(correct){ST.sessionStreak++;if(ST.sessionStreak>ST.maxSessionStreak)ST.maxSessionStreak=ST.sessionStreak;ST.score++;ST.sessionXp+=15;}
+  else ST.sessionStreak=0;
+  document.querySelectorAll('.quiz-opt').forEach((btn,idx)=>{
+    btn.classList.add('done');
+    if(ST.quizOpts[idx].en===card.en)btn.classList.add('correct');
+    else if(idx===i)btn.classList.add('wrong');
+  });
+  if(card.note){const n=document.getElementById('quiz-note');n.textContent='💡 '+card.note;n.classList.remove('hidden');}
+  const nb=document.getElementById('quiz-next-btn');
+  nb.textContent=(ST.idx+1>=ST.cards.length)?'See results · Ver resultados 🏁':'Next · Próximo →';
+  nb.classList.remove('hidden');
+  document.getElementById('lesson-streak-badge').textContent='🔥'+ST.sessionStreak;
+  document.getElementById('lesson-score-badge').textContent='⭐'+ST.score+'/'+(ST.idx+1);
+}
+
+function quizNext(){ST.idx++;if(ST.idx>=ST.cards.length){endSession();return;}renderLesson();}
+
+function endSession(){
+  const total=ST.cards.length;
+  const pct=total>0?Math.round((ST.score/total)*100):0;
+  let bonus=pct===100?50:pct>=80?25:pct>=60?10:0;
+  if(ST.isDaily)bonus+=30;
+  const totalXp=ST.sessionXp+bonus;
+  addXp(totalXp);
+  if(ST.currentTopicId&&ST.currentTopicId!=='daily')
+    ST.topicProgress[ST.currentTopicId]={correct:ST.score,total:total,pct:pct};
+  save();
+  const emoji=pct>=90?'🏆':pct>=70?'⭐':pct>=50?'💪':'📚';
+  const title=pct>=90?'Excellent, Nina!':pct>=70?'Well done! · Muito bem!':pct>=50?'Good work! · Bom trabalho!':'Keep practising! · Continue!';
+  document.getElementById('res-emoji').textContent=emoji;
+  document.getElementById('res-title').textContent=title;
+  document.getElementById('res-pct').textContent=pct+'%';
+  document.getElementById('res-xp').textContent='+'+totalXp+' XP';
+  document.getElementById('rs-correct').textContent=ST.score;
+  document.getElementById('rs-wrong').textContent=total-ST.score;
+  document.getElementById('rs-streak').textContent=ST.maxSessionStreak;
+  document.getElementById('res-quote').innerHTML=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  show('screen-result');
+}
+
+function repeatLesson(){
+  ST.idx=0;ST.score=0;ST.sessionStreak=0;ST.maxSessionStreak=0;
+  ST.flipped=false;ST.selected=null;ST.sessionXp=0;
+  ST.cards=shuffle(ST.cards);
+  show('screen-lesson');renderLesson();
+}
+
+function backFromLesson(){
+  if(ST.currentCatId)openCat(ST.currentCatId);
+  else showDash();
+}
+
+function showProgress(){
+  const lv=getLevel(ST.xp);const pct=getLevelProgress(ST.xp);
+  document.getElementById('prog-level-name').textContent=lv.icon+' '+lv.name;
+  document.getElementById('prog-xp-text').innerHTML=`<strong>${ST.xp} XP</strong> · Next level: ${lv.max===Infinity?'Maximum reached':lv.max+' XP'}`;
+  document.getElementById('prog-xp-fill').style.width=pct+'%';
+  const today=new Date();const days=['M','T','W','T','F','S','S'];
+  document.getElementById('prog-streak-row').innerHTML=Array.from({length:7},(_,i)=>{
+    const d=new Date(today);d.setDate(d.getDate()-(6-i));
+    const ds=d.toISOString().split('T')[0];
+    const done=ST.streakDays.includes(ds);const isToday=i===6;
+    const cls=isToday?'streak-day today':done?'streak-day done':'streak-day empty';
+    return `<div class="${cls}"><span>${days[(d.getDay()+6)%7]}</span><span>${done||isToday?'✓':''}</span></div>`;
+  }).join('');
+  document.getElementById('prog-cats').innerHTML=CATS.map(cat=>{
+    const prog=getCatProgress(cat);
+    return `<div class="prog-cat-row">
+      <div class="prog-cat-top"><span class="prog-cat-name">${cat.icon} ${cat.label}</span><span class="prog-cat-pct">${prog}%</span></div>
+      <div class="prog-bar"><div class="prog-bar-fill" style="width:${prog}%"></div></div>
+    </div>`;
+  }).join('');
+  show('screen-progress');
+}
+
+function showLevelUp(lv){
+  const msgs=[
+    `Nina, you are now ${lv.name}. Annalise would be proud.`,
+    `${lv.name}. This title is yours — no one can take it away.`,
+    `Level up! ${lv.name} sounds perfect on you, Nina.`,
+    `Você é ${lv.name} agora. O inglês profissional já é seu.`,
+  ];
+  document.getElementById('lu-icon').textContent=lv.icon;
+  document.getElementById('lu-name').textContent=lv.name;
+  document.getElementById('lu-sub').textContent=msgs[Math.floor(Math.random()*msgs.length)];
+  document.getElementById('levelup-overlay').classList.remove('hidden');
+}
+function closeLevelUp(){document.getElementById('levelup-overlay').classList.add('hidden');}
+
+// WELCOME
+function closeWelcome(){document.getElementById('welcome-overlay').classList.add('hidden');localStorage.setItem('nina_en_welcomed','1');}
+function openWelcome(){document.getElementById('welcome-overlay').classList.remove('hidden');}
+function checkWelcome(){if(localStorage.getItem('nina_en_welcomed')==='1')document.getElementById('welcome-overlay').classList.add('hidden');}
+
+// TOAST
+function showToast(msg){const t=document.getElementById('pdf-toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+// PDF HELPERS
+function newPdf(){const{jsPDF}=window.jspdf;return new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});}
+function pdfHeader(doc,title,subtitle){
+  doc.setFillColor(42,92,170);doc.rect(0,0,210,28,'F');
+  doc.setFontSize(16);doc.setFont('helvetica','bold');doc.setTextColor(238,242,248);
+  doc.text(title,14,11);
+  doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(180,200,240);
+  doc.text(subtitle,14,19);
+  doc.setFontSize(7);doc.setTextColor(140,170,220);
+  doc.text("Nina's English · Rise Up · github.com/francescxavier1976-lang/espanyol-nina",14,26);
+}
+function pdfSection(doc,text,y,color){
+  const c=color||[42,92,170];
+  doc.setFillColor(...c);doc.rect(14,y-4,182,6,'F');
+  doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(238,242,248);
+  doc.text(text,16,y);return y+8;
+}
+function pdfRow(doc,col1,col2,col3,y,shade){
+  if(y>272){doc.addPage();y=20;}
+  if(shade){doc.setFillColor(240,245,255);doc.rect(14,y-3.5,182,col3?8:7,'F');}
+  doc.setFontSize(8.5);doc.setFont('helvetica','bold');doc.setTextColor(20,40,80);
+  doc.text(col1.substring(0,38),16,y);
+  doc.setFont('helvetica','normal');doc.setTextColor(10,10,10);
+  const col2x=col3?80:105;
+  doc.text(col2.substring(0,col3?30:50),col2x,y);
+  if(col3){doc.setFontSize(7.5);doc.setTextColor(80,80,120);doc.text(col3.substring(0,38),145,y);return y+9;}
+  return y+8;
+}
+
+// PDF 1 - Legal & Business
+function pdfLegalBusiness(){
+  try{
+    const doc=newPdf();
+    pdfHeader(doc,'Legal & Business English','Vocabulário jurídico e empresarial · PT → EN (🇬🇧 British / 🇺🇸 American)');
+    let y=36;
+    ['legal','banking'].forEach(catId=>{
+      const cat=CATS.find(c=>c.id===catId);
+      cat.topics.forEach(topic=>{
+        if(y>245){doc.addPage();y=20;}
+        y=pdfSection(doc,cat.icon+' '+cat.label+' — '+topic.icon+' '+topic.label,y);
+        doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(42,92,170);
+        doc.text('🇧🇷 Português',16,y);doc.text('🇬🇧🇺🇸 English',105,y);
+        doc.setDrawColor(42,92,170);doc.line(14,y+1.5,196,y+1.5);y+=7;
+        topic.items.forEach((item,i)=>{
+          const enClean=item.en.replace(/🇬🇧|🇺🇸/g,'').replace(/·/g,'/');
+          y=pdfRow(doc,item.pt,enClean,item.note||null,y,i%2===0);
+        });
+        y+=4;
+      });
+    });
+    doc.save('nina-legal-business-english.pdf');
+    showToast('⬇️ Legal & Business PDF ready!');
+  }catch(e){alert('Error generating PDF');console.error(e);}
+}
+
+// PDF 2 - British vs American
+function pdfBritishAmerican(){
+  try{
+    const doc=newPdf();
+    pdfHeader(doc,'British 🇬🇧 vs American 🇺🇸 English','Key differences for professional use · Diferenças essenciais');
+    let y=36;
+    const cat=CATS.find(c=>c.id==='brit-am');
+    cat.topics.forEach(topic=>{
+      if(y>245){doc.addPage();y=20;}
+      y=pdfSection(doc,topic.icon+' '+topic.label,y,[30,100,160]);
+      doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(42,92,170);
+      doc.text('🇧🇷 PT / Conceito',16,y);doc.text('🇬🇧 British',80,y);doc.text('🇺🇸 American',145,y);
+      doc.setDrawColor(42,92,170);doc.line(14,y+1.5,196,y+1.5);y+=7;
+      topic.items.forEach((item,i)=>{
+        if(y>272){doc.addPage();y=20;}
+        const parts=item.en.split('·');
+        const uk=parts[0]?parts[0].replace(/🇬🇧/g,'').trim():'';
+        const us=parts[1]?parts[1].replace(/🇺🇸/g,'').trim():'(same)';
+        if(i%2===0){doc.setFillColor(235,242,255);doc.rect(14,y-3.5,182,8,'F');}
+        doc.setFontSize(8.5);doc.setFont('helvetica','bold');doc.setTextColor(20,40,80);
+        doc.text(item.pt.substring(0,25),16,y);
+        doc.setFont('helvetica','normal');doc.setTextColor(20,80,20);
+        doc.text(uk.substring(0,25),80,y);
+        doc.setTextColor(140,40,0);
+        doc.text(us.substring(0,25),145,y);
+        if(item.note){doc.setFontSize(7);doc.setTextColor(100,100,100);doc.text('→ '+item.note.substring(0,55),16,y+4.5);y+=9;}
+        else y+=8;
+      });
+      y+=5;
+    });
+    doc.save('nina-british-vs-american.pdf');
+    showToast('⬇️ British vs American PDF ready!');
+  }catch(e){alert('Error generating PDF');console.error(e);}
+}
+
+// PDF 3 - False Friends
+function pdfFalseFreinds(){
+  try{
+    const doc=newPdf();
+    pdfHeader(doc,'False Friends ⚠️  PT → EN','Words that seem the same but are NOT · Palavras armadilha');
+    let y=36;
+    y=pdfSection(doc,'⚠️  CAREFUL — These words will trick you!',y,[180,40,40]);
+    doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(42,92,170);
+    doc.text('🇧🇷 PT (parece...)',16,y);doc.text('🇬🇧🇺🇸 EN (real meaning)',85,y);doc.text('⚠️ Difference',150,y);
+    doc.setDrawColor(180,40,40);doc.line(14,y+1.5,196,y+1.5);y+=7;
+    const cat=CATS.find(c=>c.id==='false-friends');
+    cat.topics[0].items.forEach((item,i)=>{
+      if(y>272){doc.addPage();y=20;}
+      if(i%2===0){doc.setFillColor(255,242,238);doc.rect(14,y-3.5,182,8,'F');}
+      doc.setFontSize(8.5);doc.setFont('helvetica','bold');doc.setTextColor(160,40,40);
+      const ptClean=item.pt.replace(/[()!¡?¿]/g,'').trim();
+      doc.text(ptClean.substring(0,28),16,y);
+      doc.setFont('helvetica','normal');doc.setTextColor(20,60,20);
+      doc.text(item.en.substring(0,28),85,y);
+      if(item.note){doc.setFontSize(7.5);doc.setTextColor(100,60,20);doc.text(item.note.substring(0,30),150,y);}
+      y+=8;
+    });
+    if(y<245){
+      y+=8;doc.setFillColor(235,245,255);doc.rect(14,y,182,22,'F');
+      doc.setDrawColor(42,92,170);doc.rect(14,y,182,22,'S');
+      doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(20,60,120);
+      doc.text('📌 Golden rule · Regra de ouro',18,y+8);
+      doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(30,30,80);
+      doc.text('When in doubt, check the dictionary. False friends cause embarrassing mistakes!',18,y+15);
+      doc.text('Na dúvida, consulte o dicionário. Os "false friends" causam erros embaraçosos!',18,y+20);
+    }
+    doc.save('nina-false-friends-en.pdf');
+    showToast('⬇️ False Friends PDF ready!');
+  }catch(e){alert('Error generating PDF');console.error(e);}
+}
+
+// PDF 4 - Job Search
+function pdfJobEnglish(){
+  try{
+    const doc=newPdf();
+    pdfHeader(doc,'Job Search English 💼','Interviews, CV, emails & LinkedIn · Procurar emprego em inglês');
+    let y=36;
+    const cat=CATS.find(c=>c.id==='jobsearch');
+    cat.topics.forEach(topic=>{
+      if(y>245){doc.addPage();y=20;}
+      y=pdfSection(doc,topic.icon+' '+topic.label,y,[20,120,70]);
+      doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(20,120,70);
+      doc.text('🇧🇷 Português',16,y);doc.text('🇬🇧🇺🇸 English',105,y);
+      doc.setDrawColor(20,120,70);doc.line(14,y+1.5,196,y+1.5);y+=7;
+      topic.items.forEach((item,i)=>{
+        const enClean=item.en.replace(/🇬🇧|🇺🇸/g,'').replace(/·/g,' / ');
+        y=pdfRow(doc,item.pt,enClean,item.note||null,y,i%2===0);
+      });
+      y+=5;
+    });
+    if(y<230){y+=6;doc.addPage();y=20;}
+    doc.setFillColor(235,255,240);doc.rect(14,y,182,50,'F');
+    doc.setDrawColor(20,120,70);doc.rect(14,y,182,50,'S');
+    doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(10,80,40);
+    doc.text('💼 Key tips for your interview in English',18,y+9);
+    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(20,50,30);
+    const tips=[
+      '✓ UK: always say "CV" — never "résumé". USA: always "résumé" — never "CV".',
+      '✓ Use formal language: "I would like to..." not "I wanna..."',
+      '✓ "I look forward to hearing from you" — perfect closing for any email.',
+      '✓ "Without prejudice" — use this in any negotiation letter in the UK.',
+      '✓ British ending: "Kind regards" · American ending: "Best regards" / "Sincerely"',
+    ];
+    tips.forEach((tip,i)=>doc.text(tip,18,y+18+(i*6)));
+    doc.save('nina-job-search-english.pdf');
+    showToast('⬇️ Job Search PDF ready!');
+  }catch(e){alert('Error generating PDF');console.error(e);}
+}
+
+// INIT
+load();checkStreak();updateDashboard();show('screen-dash');checkWelcome();
+</script>
+</body>
+</html>
