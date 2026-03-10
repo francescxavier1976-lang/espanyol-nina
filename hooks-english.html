@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>bell hooks — Aprendre anglès</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #1a1410;
+  --bg-card: #241e18;
+  --bg-card-hover: #2d2620;
+  --bg-accent: #3a2f24;
+  --text: #e8ddd0;
+  --text-muted: #a89882;
+  --text-dim: #7a6e5e;
+  --accent: #c4956a;
+  --accent-light: #d4a87a;
+  --accent-dark: #8a6040;
+  --correct: #6a9c6a;
+  --correct-bg: #1a2a1a;
+  --incorrect: #c47070;
+  --incorrect-bg: #2a1a1a;
+  --border: #3a3228;
+  --border-light: #4a4238;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Source Serif 4', Georgia, serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+.header {
+  border-bottom: 1px solid var(--border);
+  padding: 28px 24px 20px;
+  text-align: center;
+}
+.header-sub {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--accent-dark);
+  margin-bottom: 8px;
+}
+.header-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.header-book {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding: 0 8px;
+}
+.tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 14px 8px;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 14px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.tab-icon { font-size: 11px; }
+
+/* Content area */
+.content {
+  padding: 28px 20px 40px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.section { display: none; }
+.section.active { display: block; }
+
+/* Top bar */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.counter {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.score {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+/* Flashcard */
+.flashcard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 40px 28px;
+  cursor: pointer;
+  min-height: 300px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+.flashcard.flipped {
+  background: var(--bg-accent);
+  border-color: var(--accent-dark);
+}
+
+/* Front */
+.fc-word {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+.fc-phonetic {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 32px;
+}
+.fc-quote {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px 16px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.fc-hint {
+  font-size: 13px;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 24px;
+}
+
+/* Back */
+.fc-back-word {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.fc-back-phonetic {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+}
+.fc-definition {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+.fc-context-box {
+  background: var(--bg-card);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.fc-context-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.fc-context-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.fc-usage {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  font-style: italic;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.fc-related {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.fc-related-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent-light);
+  background: var(--bg);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  display: inline-block;
+}
+
+/* Navigation */
+.nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+.btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn:active { background: var(--bg-accent); }
+.btn-small {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-small.active { color: var(--correct); border-color: var(--correct); }
+.btn-action {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  text-align: center;
+}
+.btn-action.active { color: var(--accent); border-color: var(--accent); }
+.middle-btns { display: flex; gap: 8px; }
+.action-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+
+/* Passage */
+.passage-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 24px;
+  margin-bottom: 16px;
+}
+.passage-english {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.75;
+  color: var(--text);
+}
+.passage-source {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 12px;
+  text-align: right;
+}
+.key-phrases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.key-phrase {
+  background: var(--bg-accent);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  flex: 1 1 calc(50% - 4px);
+  min-width: 180px;
+}
+.kp-phrase {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+.kp-meaning {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.chapter-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent-dark);
+  background: var(--bg-accent);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* Expandable panels */
+.panel {
+  display: none;
+  border-radius: 10px;
+  padding: 20px 22px;
+  margin-bottom: 12px;
+  animation: fadeIn 0.3s ease;
+}
+.panel.visible { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+.panel-translation {
+  background: var(--bg-accent);
+  border: 1px solid var(--border);
+}
+.panel-translation .panel-text {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.panel-analysis {
+  background: var(--bg-accent);
+  border: 1px solid var(--accent-dark);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+}
+.panel-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.panel-analysis .panel-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+.panel-question {
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+.panel-question .question-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent-light);
+  line-height: 1.5;
+}
+.panel-question .question-hint {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* Comprehension */
+.comp-question-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 24px;
+  margin-bottom: 20px;
+}
+.comp-question-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text);
+}
+.comp-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.comp-option {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  text-align: left;
+  cursor: pointer;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+.comp-option:active { background: var(--bg-accent); }
+.comp-option.correct-answer { background: var(--correct-bg); border-color: var(--correct); color: var(--correct); }
+.comp-option.wrong-answer { background: var(--incorrect-bg); border-color: var(--incorrect); color: var(--incorrect); }
+.comp-option.dimmed { color: var(--text-dim); }
+.comp-option .opt-letter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-dim);
+  min-width: 20px;
+  margin-top: 2px;
+}
+.comp-option.correct-answer .opt-letter { color: var(--correct); }
+
+.comp-feedback {
+  border-radius: 10px;
+  padding: 20px 22px;
+  margin-bottom: 20px;
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.comp-feedback.visible { display: block; }
+.comp-feedback.correct { background: var(--correct-bg); border: 1px solid var(--correct); }
+.comp-feedback.incorrect { background: var(--incorrect-bg); border: 1px solid var(--incorrect); }
+.comp-feedback-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.comp-feedback.correct .comp-feedback-title { color: var(--correct); }
+.comp-feedback.incorrect .comp-feedback-title { color: var(--incorrect); }
+.comp-feedback-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.comp-next-row { display: flex; justify-content: flex-end; display: none; }
+.comp-next-row.visible { display: flex; }
+
+/* Footer */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 16px 24px;
+  text-align: center;
+}
+.footer-quote {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .header { padding: 22px 16px 16px; }
+  .header-title { font-size: 24px; }
+  .content { padding: 20px 16px 32px; }
+  .flashcard { padding: 32px 20px; min-height: 260px; }
+  .fc-word { font-size: 34px; }
+  .fc-quote { font-size: 15px; padding: 16px 8px; }
+  .passage-english { font-size: 16px; }
+  .passage-box { padding: 22px 18px; }
+  .key-phrase { flex: 1 1 100%; min-width: 0; }
+  .comp-question-text { font-size: 17px; }
+  .comp-option { font-size: 14px; padding: 12px 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-sub">Aprendre anglès amb</div>
+  <div class="header-title">bell hooks</div>
+  <div class="header-book">The Will to Change</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" data-tab="flashcards" onclick="switchTab('flashcards')">
+    <span class="tab-icon">◆</span> Vocabulari
+  </button>
+  <button class="tab" data-tab="passages" onclick="switchTab('passages')">
+    <span class="tab-icon">¶</span> Passatges
+  </button>
+  <button class="tab" data-tab="comprehension" onclick="switchTab('comprehension')">
+    <span class="tab-icon">?</span> Comprensió
+  </button>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- ═══ FLASHCARDS ═══ -->
+  <div id="flashcards-section" class="section active">
+    <div class="top-bar">
+      <span class="counter" id="fc-counter">1 / 12</span>
+      <span class="score" id="fc-learned">0 apreses</span>
+    </div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div id="fc-front">
+        <div class="fc-word" id="fc-word"></div>
+        <div class="fc-phonetic" id="fc-phonetic"></div>
+        <div class="fc-quote" id="fc-quote"></div>
+        <div class="fc-hint">toca per girar →</div>
+      </div>
+      <div id="fc-back" style="display:none">
+        <div class="fc-back-word" id="fc-back-word"></div>
+        <div class="fc-back-phonetic" id="fc-back-phonetic"></div>
+        <div class="fc-definition" id="fc-definition"></div>
+        <div class="fc-context-box">
+          <div class="fc-context-label">Context en hooks</div>
+          <div class="fc-context-text" id="fc-context"></div>
+        </div>
+        <div class="fc-usage" id="fc-usage"></div>
+        <div class="fc-related" id="fc-related" style="display:none"></div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn" onclick="fcPrev()">← anterior</button>
+      <div class="middle-btns">
+        <button class="btn-small" id="btn-related" onclick="toggleRelated()" style="display:none">relacionades</button>
+        <button class="btn-small" id="btn-learned" onclick="toggleLearned()">marcar apresa</button>
+      </div>
+      <button class="btn" onclick="fcNext()">següent →</button>
+    </div>
+  </div>
+
+  <!-- ═══ PASSAGES ═══ -->
+  <div id="passages-section" class="section">
+    <div class="top-bar">
+      <span class="counter" id="ps-counter">Passatge 1 / 4</span>
+      <span class="chapter-tag" id="ps-chapter"></span>
+    </div>
+    <div class="passage-box">
+      <div class="passage-english" id="ps-english"></div>
+      <div class="passage-source">— bell hooks, <em>The Will to Change</em></div>
+    </div>
+    <div class="key-phrases" id="ps-keyphrases"></div>
+    <div class="action-row">
+      <button class="btn-action" id="btn-translation" onclick="togglePanel('translation')">▸ Traducció</button>
+      <button class="btn-action" id="btn-analysis" onclick="togglePanel('analysis')">▸ Anàlisi</button>
+      <button class="btn-action" id="btn-question" onclick="togglePanel('question')">▸ Pregunta</button>
+    </div>
+    <div class="panel panel-translation" id="panel-translation">
+      <div class="panel-text" id="ps-catalan"></div>
+    </div>
+    <div class="panel panel-analysis" id="panel-analysis">
+      <div class="panel-label">La Marta diu:</div>
+      <div class="panel-text" id="ps-analysis"></div>
+    </div>
+    <div class="panel panel-question" id="panel-question">
+      <div class="question-text" id="ps-question"></div>
+      <div class="question-hint">Pensa-hi. Escriu la resposta al teu quadern o porta-la a la pròxima sessió.</div>
+    </div>
+    <div class="nav-row">
+      <button class="btn" onclick="psPrev()">← anterior</button>
+      <button class="btn" onclick="psNext()">següent →</button>
+    </div>
+  </div>
+
+  <!-- ═══ COMPREHENSION ═══ -->
+  <div id="comprehension-section" class="section">
+    <div class="top-bar">
+      <span class="counter" id="cq-counter">Pregunta 1 / 5</span>
+      <span class="score" id="cq-score" style="display:none"></span>
+    </div>
+    <div class="comp-question-box">
+      <div class="comp-question-text" id="cq-question"></div>
+    </div>
+    <div class="comp-options" id="cq-options"></div>
+    <div class="comp-feedback" id="cq-feedback">
+      <div class="comp-feedback-title" id="cq-feedback-title"></div>
+      <div class="comp-feedback-text" id="cq-feedback-text"></div>
+    </div>
+    <div class="comp-next-row" id="cq-next-row">
+      <button class="btn" onclick="cqNext()">següent pregunta →</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-quote">"To know love, men must be able to let go the will to dominate."</div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────
+
+const FLASHCARDS = [
+  {
+    word: "grief", phonetic: "/ɡriːf/",
+    definition_cat: "Dol profund. No només per algú que mor — també per allò que no vas tenir mai.",
+    hooks_quote: "And my grief was partly that my father, whom I loved, was dying.",
+    hooks_context: "Barbara Deming descriu el doble dol: plora perquè el pare es mor, i plora perquè sap que la mort la farà lliure.",
+    usage: "hooks utilitza 'grief' per parlar del dolor davant la pèrdua de l'amor del pare, no només de la mort física.",
+    related: ["sorrow", "mourning", "loss", "heartbreak"]
+  },
+  {
+    word: "sorrow", phonetic: "/ˈsɒr.oʊ/",
+    definition_cat: "Tristesa profunda, pena que t'habita, que es queda a dins.",
+    hooks_quote: "They can mask these feelings because they are taught that real men do not feel sorrow.",
+    hooks_context: "hooks parla dels nois adolescents que aprenen a amagar la tristesa profunda rere la ràbia.",
+    usage: "Si 'grief' és el cop, 'sorrow' és la marca que queda. Una tristesa que no se'n va.",
+    related: ["grief", "sadness", "anguish", "despair"]
+  },
+  {
+    word: "hopeless", phonetic: "/ˈhoʊp.ləs/",
+    definition_cat: "Cas perdut. Sense remei. Sense esperança de canvi.",
+    hooks_quote: "They believe that men are hopeless.",
+    hooks_context: "Les dones i els nens que pateixen dominació arriben a creure que els homes no canviaran mai — que són casos perduts.",
+    usage: "Aquí no són els homes que es veuen a si mateixos sense esperança — són els altres que els veuen així.",
+    related: ["helpless", "desperate", "resigned"]
+  },
+  {
+    word: "patriarchy", phonetic: "/ˈpeɪ.tri.ɑːr.ki/",
+    definition_cat: "Sistema polític-social que insisteix que els homes són inherentment dominants i superiors.",
+    hooks_quote: "Patriarchy is the single most life-threatening social disease assaulting the male body and spirit.",
+    hooks_context: "hooks defineix el patriarcat no com una opinió sinó com un sistema que fa mal als homes tant com a les dones.",
+    usage: "Per a hooks, 'patriarchy' no és sinònim d'homes dolents — és el sistema que els deforma.",
+    related: ["domination", "masculinity", "oppression", "sexism"]
+  },
+  {
+    word: "longing", phonetic: "/ˈlɒŋ.ɪŋ/",
+    definition_cat: "Anhel profund. Desig intens d'alguna cosa que no tens o que has perdut.",
+    hooks_quote: "In our culture we say very little about the longing for father love.",
+    hooks_context: "hooks parla de com la nostra cultura silencia l'anhel d'amor patern que tothom porta dins.",
+    usage: "'Longing' no és un desig qualsevol — és un buit que et tira cap a allò que necessites.",
+    related: ["yearning", "craving", "hunger", "desire"]
+  },
+  {
+    word: "stoicism", phonetic: "/ˈstoʊ.ɪ.sɪz.əm/",
+    definition_cat: "Estoïcisme emocional. Amagar el que sents, aguantar sense queixar-te.",
+    hooks_quote: "Patriarchal mores teach a form of emotional stoicism to men that says they are more manly if they do not feel.",
+    hooks_context: "hooks descriu com els costums patriarcals ensenyen als homes que ser home vol dir no sentir.",
+    usage: "'Stoicism' aquí no és la filosofia grega — és la disfressa que el patriarcat posa als homes.",
+    related: ["numbness", "repression", "silence", "endurance"]
+  },
+  {
+    word: "unbearable", phonetic: "/ʌnˈber.ə.bəl/",
+    definition_cat: "Insuportable. Que no es pot suportar.",
+    hooks_quote: "That the only time I would feel free to touch him without feeling threatened by his power over me was when he lay dead—it's unbearable to me.",
+    hooks_context: "Deming expressa que és insuportable que l'única manera de tocar el pare sense por sigui quan ell ja és mort.",
+    usage: "hooks tria cites on 'unbearable' no descriu dolor físic sinó l'horror de constatar una veritat emocional.",
+    related: ["intolerable", "overwhelming", "devastating"]
+  },
+  {
+    word: "domination", phonetic: "/ˌdɒm.ɪˈneɪ.ʃən/",
+    definition_cat: "Dominació. Control i poder sobre els altres.",
+    hooks_quote: "Men wield patriarchal power in daily life in ways that are awesomely life-threatening.",
+    hooks_context: "hooks descriu la dominació no com actes excepcionals sinó com el funcionament quotidià del poder masculí.",
+    usage: "Per a hooks, 'domination' no és només violència — inclou el silenci, la indiferència, el control emocional.",
+    related: ["power", "control", "oppression", "tyranny"]
+  },
+  {
+    word: "vulnerability", phonetic: "/ˌvʌl.nər.əˈbɪl.ɪ.ti/",
+    definition_cat: "Vulnerabilitat. Estat d'obertura emocional, de mostrar-se sense cuirassa.",
+    hooks_quote: "I did not want my image of the strong man truly challenged by learning of his weaknesses and vulnerabilities.",
+    hooks_context: "hooks confessa que ni ella, feminista, volia escoltar el dolor del seu home — perquè trencava la imatge de fortalesa.",
+    usage: "'Vulnerability' és el que el patriarcat ensenya als homes a amagar i el que hooks diu que és imprescindible per estimar.",
+    related: ["openness", "tenderness", "exposure", "fragility"]
+  },
+  {
+    word: "reconciliation", phonetic: "/ˌrek.ən.sɪl.iˈeɪ.ʃən/",
+    definition_cat: "Reconciliació. Retrobament, reparació d'un vincle trencat.",
+    hooks_quote: "My reconciliation with my father began with my recognition that I wanted and needed his love.",
+    hooks_context: "hooks explica que la reconciliació amb el pare no va venir del perdó fàcil sinó de reconèixer que necessitava el seu amor.",
+    usage: "'Reconciliation' per a hooks no és oblidar el mal — és tornar a mirar amb els ulls oberts.",
+    related: ["healing", "forgiveness", "restoration", "connection"]
+  },
+  {
+    word: "anguish", phonetic: "/ˈæŋ.ɡwɪʃ/",
+    definition_cat: "Angoixa extrema. Dolor emocional intens que estreny el pit.",
+    hooks_quote: "This truth exists alongside another truth: the truth that this wish causes us anguish.",
+    hooks_context: "Deming parla de l'angoixa de desitjar que els homes morin i saber que aquest desig et destrossa per dins.",
+    usage: "'Anguish' és més fort que 'sadness' o 'sorrow' — és un dolor que et parteix.",
+    related: ["agony", "torment", "distress", "suffering"]
+  },
+  {
+    word: "wholeness", phonetic: "/ˈhoʊl.nəs/",
+    definition_cat: "Plenitud. Sentir-se complet, sencer, sense parts amputades.",
+    hooks_quote: "It was the search for wholeness, for self-recovery, that led me back to my dad.",
+    hooks_context: "hooks diu que el feminisme la va allunyar del pare, però la recerca de plenitud la hi va tornar a portar.",
+    usage: "'Wholeness' és l'objectiu últim de hooks: ser sencer. No es pot ser sencer rebutjant una part de tu.",
+    related: ["completeness", "integrity", "healing", "self-recovery"]
+  }
+];
+
+const PASSAGES = [
+  {
+    id: 1, chapter: "Preface",
+    english: "No one hungers for male love more than the little girl or boy who rightfully needs and seeks love from Dad. He may be absent, dead, present in body yet emotionally not there, but the girl or boy hungers to be acknowledged, recognized, respected, cared for.",
+    catalan: "Ningú no té més fam d'amor masculí que la nena o el nen que legítimament necessita i busca l'amor del pare. Pot estar absent, mort, present de cos però emocionalment no ser-hi, però la nena o el nen té fam de ser reconegut, vist, respectat, cuidat.",
+    key_phrases: [
+      { phrase: "hungers for", meaning: "té fam de, anhela desesperadament" },
+      { phrase: "rightfully", meaning: "legítimament, amb tot el dret" },
+      { phrase: "present in body yet emotionally not there", meaning: "present de cos però absent emocionalment" },
+      { phrase: "acknowledged", meaning: "reconegut, vist, tingut en compte" }
+    ],
+    analysis: "hooks utilitza la metàfora de la fam — no diu 'want' o 'need', diu 'hunger'. L'amor del pare no és un desig, és una necessitat tan bàsica com menjar. I fixa't en la llista final: acknowledged, recognized, respected, cared for — una escalada del mínim (que et vegin) al màxim (que et cuidin).",
+    question: "Per què creus que hooks tria la paraula 'hunger' i no 'need' o 'want'?"
+  },
+  {
+    id: 2, chapter: "Preface",
+    english: "The reality is that men are hurting and that the whole culture responds to them by saying, 'Please do not tell us what you feel.'",
+    catalan: "La realitat és que els homes pateixen i que tota la cultura els respon dient: 'Si us plau, no ens digueu què sentiu.'",
+    key_phrases: [
+      { phrase: "hurting", meaning: "patint, fent-se mal per dins" },
+      { phrase: "the whole culture", meaning: "tota la cultura, no només les dones o els homes" },
+      { phrase: "responds to them", meaning: "els respon, els contesta" }
+    ],
+    analysis: "Aquesta frase és un cop de puny en dues línies. hooks posa el dolor dels homes com a realitat — no opinió, no possibilitat — i immediatament mostra com la cultura sencera (homes i dones) conspira per silenciar-lo. El 'Please' és devastador: ni tan sols és una ordre, és una petició educada de silenci.",
+    question: "Per què el 'Please' fa aquesta frase encara més dura que si digués simplement 'Do not tell us'?"
+  },
+  {
+    id: 3, chapter: "Preface",
+    english: "Somehow the test of manhood, men told me, was the willingness to accept this loss, to not speak it even in private grief.",
+    catalan: "D'alguna manera, la prova de la masculinitat, em deien els homes, era la disposició a acceptar aquesta pèrdua, a no parlar-ne ni tan sols en el dol privat.",
+    key_phrases: [
+      { phrase: "the test of manhood", meaning: "la prova de ser home, l'examen de masculinitat" },
+      { phrase: "willingness", meaning: "disposició, voluntat d'acceptar" },
+      { phrase: "to not speak it", meaning: "no dir-ho, no posar-hi paraules" },
+      { phrase: "private grief", meaning: "dol privat, el dolor que tens quan ets sol" }
+    ],
+    analysis: "hooks recull la veu dels homes que li van parlar. 'The test of manhood' — fixa't: no diu 'part of manhood' sinó 'THE test'. La prova definitiva. I la prova no és fer res sinó acceptar una pèrdua i callar. Ser home = perdre el dret a sentir + callar-ho.",
+    question: "Què és exactament 'this loss' — què han perdut aquests homes?"
+  },
+  {
+    id: 4, chapter: "Preface",
+    english: "We cannot love what we fear. That is why so many religious traditions teach us that there is no fear in love.",
+    catalan: "No podem estimar allò que temem. Per això tantes tradicions religioses ens ensenyen que en l'amor no hi ha por.",
+    key_phrases: [
+      { phrase: "what we fear", meaning: "allò que temem, el que ens fa por" },
+      { phrase: "religious traditions", meaning: "tradicions religioses" },
+      { phrase: "there is no fear in love", meaning: "en l'amor no hi ha por (referència a 1 Joan 4:18)" }
+    ],
+    analysis: "hooks connecta el pensament feminista amb l'espiritualitat — una cosa que fa constantment. Aquesta frase és la clau de volta de tota la introducció: la por és l'enemic de l'amor. La por del pare, la por al pare, la por entre homes — tot el que hem llegit es resumeix aquí.",
+    question: "Com a professor de religió, què et diu que hooks, una pensadora feminista negra, arribi a la mateixa conclusió que la Primera Carta de Joan?"
+  }
+];
+
+const COMPREHENSION = [
+  {
+    question: "Quan hooks diu 'they believe that men are hopeless', qui és 'they'?",
+    options: ["Els homes que han renunciat a canviar", "Les dones i els nens que pateixen la dominació masculina", "Les feministes radicals", "La societat en general"],
+    correct: 1,
+    explanation: "El subjecte de 'they believe' són les dones i els nens dominats pels homes. No són els homes parlant de si mateixos — són els altres que els veuen com a casos perduts."
+  },
+  {
+    question: "Què vol dir hooks quan escriu que les dones han estat 'the keepers of grave and serious secrets'?",
+    options: ["Que les dones amaguen informació als homes", "Que les dones saben com funciona el poder masculí a casa i han après a callar", "Que les dones tenen secrets que els homes desconeixen", "Que les dones protegeixen els homes dels seus propis secrets"],
+    correct: 1,
+    explanation: "hooks diu que les dones veuen les estratègies quotidianes de la dominació masculina — com opera el poder a la vida privada — però han estat socialitzades per guardar silenci sobre això."
+  },
+  {
+    question: "Per què hooks diu que odiar els homes era 'just another way to not take men and masculinity seriously'?",
+    options: ["Perquè odiar és una emoció superficial", "Perquè etiquetar-los com a opressors permetia no haver d'entendre'ls de veritat", "Perquè l'odi és contrari al feminisme", "Perquè les dones no els odiaven realment"],
+    correct: 1,
+    explanation: "hooks argumenta que reduir tots els homes a 'opressors' era una manera d'evitar la feina difícil: entendre la masculinitat en la seva complexitat, parlar del que sabem i del que no sabem sobre els homes."
+  },
+  {
+    question: "Quan Barbara Deming abraça el cos del seu pare mort, el seu dolor és doble. Per què?",
+    options: ["Perquè perd el pare i també perd la mare", "Perquè el pare es mor i perquè sab que la mort la farà sentir més lliure", "Perquè no va arribar a temps de dir-li adéu", "Perquè recorda els bons moments i els dolents alhora"],
+    correct: 1,
+    explanation: "Deming plora perquè l'home que estima es mor, però també plora perquè sap que només pot tocar-lo lliurement ara que ell ja no pot exercir poder sobre ella. Que això sigui així és el que li resulta 'unbearable' — insuportable."
+  },
+  {
+    question: "Què vol dir hooks amb 'something missing within'?",
+    options: ["Que als homes els falta intel·ligència emocional", "Que els homes descriuen un buit interior des que van aprendre a reprimir les emocions", "Que els homes necessiten teràpia", "Que als homes els falta educació feminista"],
+    correct: 1,
+    explanation: "hooks recull el testimoni d'homes que recorden un moment de la infància on sentien plenitud emocional — i després una ruptura. 'Something missing within' és com descriuen el buit que va deixar aprendre a no sentir."
+  }
+];
+
+// ─── STATE ───────────────────────────────────────────────────────
+
+let fcIndex = 0, fcFlipped = false, fcShowRelated = false;
+let fcLearnedSet = new Set();
+let psIndex = 0, psOpenPanels = { translation: false, analysis: false, question: false };
+let cqIndex = 0, cqAnswered = false, cqSelected = null, cqCorrectCount = 0, cqTotalCount = 0;
+
+// ─── TABS ────────────────────────────────────────────────────────
+
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.tab[data-tab="${id}"]`).classList.add('active');
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id + '-section').classList.add('active');
+}
+
+// ─── FLASHCARDS ─────────────────────────────────────────────────
+
+function renderFC() {
+  const c = FLASHCARDS[fcIndex];
+  document.getElementById('fc-counter').textContent = `${fcIndex + 1} / ${FLASHCARDS.length}`;
+  document.getElementById('fc-learned').textContent = `${fcLearnedSet.size} apres${fcLearnedSet.size === 1 ? 'a' : 'es'}`;
+
+  document.getElementById('fc-word').textContent = c.word;
+  document.getElementById('fc-phonetic').textContent = c.phonetic;
+  document.getElementById('fc-quote').textContent = `"${c.hooks_quote}"`;
+
+  document.getElementById('fc-back-word').textContent = c.word;
+  document.getElementById('fc-back-phonetic').textContent = c.phonetic;
+  document.getElementById('fc-definition').textContent = c.definition_cat;
+  document.getElementById('fc-context').textContent = c.hooks_context;
+  document.getElementById('fc-usage').textContent = '⚡ ' + c.usage;
+
+  const relEl = document.getElementById('fc-related');
+  relEl.innerHTML = c.related.map(w => `<span class="fc-related-tag">${w}</span>`).join('');
+
+  const card = document.getElementById('flashcard');
+  const front = document.getElementById('fc-front');
+  const back = document.getElementById('fc-back');
+  const btnRel = document.getElementById('btn-related');
+  const btnLrn = document.getElementById('btn-learned');
+
+  if (fcFlipped) {
+    card.classList.add('flipped');
+    front.style.display = 'none';
+    back.style.display = 'block';
+    btnRel.style.display = 'inline-block';
+    relEl.style.display = fcShowRelated ? 'flex' : 'none';
+  } else {
+    card.classList.remove('flipped');
+    front.style.display = 'block';
+    back.style.display = 'none';
+    btnRel.style.display = 'none';
+    relEl.style.display = 'none';
+  }
+
+  btnLrn.className = fcLearnedSet.has(fcIndex) ? 'btn-small active' : 'btn-small';
+  btnLrn.textContent = fcLearnedSet.has(fcIndex) ? '✓ apresa' : 'marcar apresa';
+}
+
+function flipCard() { fcFlipped = !fcFlipped; renderFC(); }
+function fcNext() { fcFlipped = false; fcShowRelated = false; fcIndex = (fcIndex + 1) % FLASHCARDS.length; renderFC(); }
+function fcPrev() { fcFlipped = false; fcShowRelated = false; fcIndex = (fcIndex - 1 + FLASHCARDS.length) % FLASHCARDS.length; renderFC(); }
+function toggleRelated() { fcShowRelated = !fcShowRelated; renderFC(); }
+function toggleLearned() {
+  if (fcLearnedSet.has(fcIndex)) fcLearnedSet.delete(fcIndex);
+  else fcLearnedSet.add(fcIndex);
+  renderFC();
+}
+
+// ─── PASSAGES ───────────────────────────────────────────────────
+
+function renderPS() {
+  const p = PASSAGES[psIndex];
+  document.getElementById('ps-counter').textContent = `Passatge ${psIndex + 1} / ${PASSAGES.length}`;
+  document.getElementById('ps-chapter').textContent = p.chapter;
+  document.getElementById('ps-english').textContent = `"${p.english}"`;
+  document.getElementById('ps-catalan').textContent = p.catalan;
+  document.getElementById('ps-analysis').textContent = p.analysis;
+  document.getElementById('ps-question').innerHTML = '💭 ' + p.question;
+
+  const kpEl = document.getElementById('ps-keyphrases');
+  kpEl.innerHTML = p.key_phrases.map(kp =>
+    `<div class="key-phrase"><div class="kp-phrase">${kp.phrase}</div><div class="kp-meaning">${kp.meaning}</div></div>`
+  ).join('');
+
+  // Reset panels
+  ['translation', 'analysis', 'question'].forEach(k => {
+    psOpenPanels[k] = false;
+    document.getElementById('panel-' + k).classList.remove('visible');
+    const btn = document.getElementById('btn-' + k);
+    btn.classList.remove('active');
+    btn.textContent = '▸ ' + btn.textContent.replace(/[▸▾]\s*/, '');
+  });
+}
+
+function togglePanel(name) {
+  psOpenPanels[name] = !psOpenPanels[name];
+  const panel = document.getElementById('panel-' + name);
+  const btn = document.getElementById('btn-' + name);
+  const labels = { translation: 'Traducció', analysis: 'Anàlisi', question: 'Pregunta' };
+
+  if (psOpenPanels[name]) {
+    panel.classList.add('visible');
+    btn.classList.add('active');
+    btn.textContent = '▾ ' + labels[name];
+  } else {
+    panel.classList.remove('visible');
+    btn.classList.remove('active');
+    btn.textContent = '▸ ' + labels[name];
+  }
+}
+
+function psNext() { psIndex = (psIndex + 1) % PASSAGES.length; renderPS(); }
+function psPrev() { psIndex = (psIndex - 1 + PASSAGES.length) % PASSAGES.length; renderPS(); }
+
+// ─── COMPREHENSION ──────────────────────────────────────────────
+
+function renderCQ() {
+  const q = COMPREHENSION[cqIndex];
+  document.getElementById('cq-counter').textContent = `Pregunta ${cqIndex + 1} / ${COMPREHENSION.length}`;
+
+  const scoreEl = document.getElementById('cq-score');
+  if (cqTotalCount > 0) {
+    scoreEl.style.display = 'inline';
+    scoreEl.textContent = `${cqCorrectCount}/${cqTotalCount}`;
+    scoreEl.style.color = (cqCorrectCount / cqTotalCount >= 0.7) ? 'var(--correct)' : 'var(--accent)';
+  }
+
+  document.getElementById('cq-question').textContent = q.question;
+
+  const optEl = document.getElementById('cq-options');
+  const letters = ['A', 'B', 'C', 'D'];
+  optEl.innerHTML = q.options.map((opt, i) =>
+    `<button class="comp-option" data-idx="${i}" onclick="cqAnswer(${i})">
+      <span class="opt-letter">${letters[i]}</span>${opt}
+    </button>`
+  ).join('');
+
+  document.getElementById('cq-feedback').classList.remove('visible', 'correct', 'incorrect');
+  document.getElementById('cq-next-row').classList.remove('visible');
+  cqAnswered = false;
+  cqSelected = null;
+}
+
+function cqAnswer(idx) {
+  if (cqAnswered) return;
+  cqAnswered = true;
+  cqSelected = idx;
+  const q = COMPREHENSION[cqIndex];
+  const isCorrect = idx === q.correct;
+
+  cqTotalCount++;
+  if (isCorrect) cqCorrectCount++;
+
+  document.querySelectorAll('.comp-option').forEach((el, i) => {
+    el.style.cursor = 'default';
+    if (i === q.correct) el.classList.add('correct-answer');
+    else if (i === idx) el.classList.add('wrong-answer');
+    else el.classList.add('dimmed');
+  });
+
+  const fb = document.getElementById('cq-feedback');
+  fb.classList.add('visible', isCorrect ? 'correct' : 'incorrect');
+  document.getElementById('cq-feedback-title').textContent = isCorrect ? 'Ara sí.' : 'Torna a llegir.';
+  document.getElementById('cq-feedback-text').textContent = q.explanation;
+  document.getElementById('cq-next-row').classList.add('visible');
+
+  const scoreEl = document.getElementById('cq-score');
+  scoreEl.style.display = 'inline';
+  scoreEl.textContent = `${cqCorrectCount}/${cqTotalCount}`;
+  scoreEl.style.color = (cqCorrectCount / cqTotalCount >= 0.7) ? 'var(--correct)' : 'var(--accent)';
+}
+
+function cqNext() {
+  cqIndex = (cqIndex + 1) % COMPREHENSION.length;
+  renderCQ();
+}
+
+// ─── INIT ───────────────────────────────────────────────────────
+
+renderFC();
+renderPS();
+renderCQ();
+</script>
+</body>
+</html>
